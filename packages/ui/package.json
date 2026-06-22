@@ -1,0 +1,26 @@
+{
+    "name": "@megbailey/ui",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@apollo/client": "^3.13.1",
+        "antd": "^6.4.5",
+        "capitalize": "^2.0.4",
+        "clsx": "^2.1.1",
+        "dompurify": "^3.2.4",
+        "graphql-tag": "^2.12.6",
+        "informed": "^4.66.3",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "uniqid": "^5.4.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@types/uniqid": "^5.3.4",
+        "typescript": "^5.7.3"
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "megbailey-core",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "react-select": "^5.10.2"
+  }
+}
