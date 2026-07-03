@@ -3,11 +3,12 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "storybook": "lsof -t -i:6006 | grep . && kill -9 $(lsof -t -i:6006); storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "dependencies": {
         "@apollo/client": "^3.13.1",
-        "antd": "^6.4.5",
         "capitalize": "^2.0.4",
         "clsx": "^2.1.1",
         "dompurify": "^3.2.4",
@@ -15,12 +16,24 @@
         "informed": "^4.66.3",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
+        "react-select": "^5.9.0",
         "uniqid": "^5.4.0"
     },
     "devDependencies": {
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "@types/uniqid": "^5.3.4",
-        "typescript": "^5.7.3"
+        "typescript": "^5.7.3",
+        "storybook": "^10.4.6",
+        "@storybook/react-vite": "^10.4.6",
+        "@chromatic-com/storybook": "^5.2.1",
+        "@storybook/addon-vitest": "^10.4.6",
+        "@storybook/addon-a11y": "^10.4.6",
+        "@storybook/addon-docs": "^10.4.6",
+        "@storybook/addon-mcp": "^0.6.0",
+        "vitest": "^4.1.9",
+        "playwright": "^1.61.1",
+        "@vitest/browser-playwright": "^4.1.9",
+        "@vitest/coverage-v8": "^4.1.9"
     }
 }

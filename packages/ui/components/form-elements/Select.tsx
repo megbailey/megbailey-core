@@ -4,12 +4,12 @@ import ReactSelect from 'react-select';
 import clsx from 'clsx';
 import uniqid from 'uniqid';
 
-interface SelectOption {
+export interface SelectOption {
     label: string;
     value: string;
 }
 
-interface SelectProps {
+export interface SelectProps {
     field?: string;
     label?: string;
     options: SelectOption[];

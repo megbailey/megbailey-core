@@ -13,6 +13,11 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement | HT
     active?: boolean;
     inverse?: boolean;
     target?: string;
+    role?: string;
+    onKeyDown?: any;
+    "aria-expanded"?: boolean;
+    "aria-controls"?: string;
+    "aria-current"?: any;
     icon?: {
         name: string;
         size?: string;

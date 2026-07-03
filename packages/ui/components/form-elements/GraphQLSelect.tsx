@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 
 import Select from "./Select";
 
-import {resolveAmbiguousPath} from "../../../utils/objectTraversal.ts";
+import {resolveAmbiguousPath} from "../../../utils/objectTraversal";
 
 export const parseJSONOptionValue = ( event: any ) => {
     if ( Array.isArray( event.value ) ) {

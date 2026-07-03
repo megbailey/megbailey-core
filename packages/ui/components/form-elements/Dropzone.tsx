@@ -309,7 +309,7 @@ const Dropzone = (props: DropzoneProps) => {
     function uploadFile( file: File ) {
         setIsLoading(true)
         // uploadFilePromise must return a string of the filename that was uploaded
-        return uploadFilePromise(file).then(( result ) => {
+        return uploadFilePromise(file).then(( result: any ) => {
             const filename = result?.src ?? result
             const currentValue = Array.isArray(fieldState.value) ? fieldState.value : [];
             if ( isMulti ) {
