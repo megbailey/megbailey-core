@@ -5,23 +5,35 @@ const mockItems: DisclosureTreeItemProps[] = [
   {
     id: '1',
     parent_id: null,
-    //children: ['1-1', '1-2'],
-    item: ( <p>Item 1</p> )
+    item: ( <p>Item 1</p> ),
+    items: [
+        {
+            id: '30',
+            parent_id: '1',
+            item: ( <p>Item 1a</p> )
+        },
+        {
+            id: '31',
+            parent_id: '1',
+            item: ( <p>Item 1b</p> )
+        },
+
+    ],
   },
   {
-    id: '1-1',
+    id: '2',
     parent_id: null,
     //children: [],
     item: ( <p>Item 2</p> )
   },
   {
-    id: '1-2',
+    id: '3',
     parent_id: null,
     //children: [],
     item: ( <p>Item 3</p> )
   },
   {
-    id: '2',
+    id: '4',
     parent_id: null,
     //children: [],
     item: ( <p>Item 4</p> ),
