@@ -4,12 +4,12 @@ import { useField, type FieldProps } from "informed";
 import uniqid from "uniqid";
 import dompurify from "dompurify";
 
-import Icon from "../icon/Icon";
-import Button from "../button/Button";
-import Paragraph from "../text/Paragraph";
-import Tooltip from "../tooltip/Tooltip";
-import type { ImageDimensions, UploadResult, ValidationResult } from "./types";
-import { getUploadErrorMessage } from "./types";
+import Icon from "../../icon/Icon";
+import Button from "../../button/Button";
+import Paragraph from "../../text/Paragraph";
+import Tooltip from "../../tooltip/Tooltip";
+import type { ImageDimensions, UploadResult, ValidationResult } from "../types";
+import { getUploadErrorMessage } from "../types";
 
 export const propValues = {
     accept: ["image", "document"],

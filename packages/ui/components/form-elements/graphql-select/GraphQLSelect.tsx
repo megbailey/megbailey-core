@@ -3,11 +3,11 @@ import { useLazyQuery, type DocumentNode } from "@apollo/client";
 import gql from "graphql-tag";
 import type { GroupBase, OnChangeValue, OptionsOrGroups } from "react-select";
 
-import InformedSelect, { type InformedSelectOption } from "./InformedSelect";
-import type { FormFieldChangeEvent } from "./types";
-import { isCallableFunction } from "./types";
+import InformedSelect, { type InformedSelectOption } from "../informed-select/InformedSelect";
+import type { FormFieldChangeEvent } from "../types";
+import { isCallableFunction } from "../types";
 
-import { resolveAmbiguousPath } from "../../../utils/helpers/traversal";
+import { resolveAmbiguousPath } from "@megbailey/utils";
 
 type GraphQLSelectChangeEvent<TItem> = FormFieldChangeEvent<TItem | TItem[]>;
 

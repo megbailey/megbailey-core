@@ -14,7 +14,6 @@ const meta: Meta<InformedSelectProps> = {
             </Form>
         ),
     ],
-    tags: ["autodocs"],
     argTypes: {
         field: { control: "text" },
         label: { control: "text" },

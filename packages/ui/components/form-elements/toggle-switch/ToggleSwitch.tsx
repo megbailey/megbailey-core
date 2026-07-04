@@ -1,7 +1,7 @@
 import { useState, type HTMLAttributes } from "react";
-import Tooltip from "../tooltip/Tooltip";
+import Tooltip from "../../tooltip/Tooltip";
 
-import type { ToggleSwitchChangeEvent } from "./types";
+import type { ToggleSwitchChangeEvent } from "../types";
 
 export const propValues = {
     initialValue: [true, false],

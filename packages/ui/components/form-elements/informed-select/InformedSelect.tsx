@@ -10,7 +10,7 @@ import ReactSelect, {
 import clsx from "clsx";
 import uniqid from "uniqid";
 
-import type { FormFieldBlurHandler, FormFieldChangeHandler } from "./types";
+import type { FormFieldBlurHandler, FormFieldChangeHandler } from "../types";
 
 export type InformedSelectOption = {
     label: string;

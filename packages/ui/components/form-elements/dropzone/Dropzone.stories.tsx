@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Form } from "informed";
 import { fn } from "storybook/test";
 import Dropzone from "./Dropzone";
-import type { UploadResult } from "./types";
+import type { UploadResult } from "../types";
 
 const mockUploadFilePromise = (file: File): Promise<UploadResult> => {
     return new Promise((resolve) => {
@@ -24,7 +24,6 @@ const meta = {
             </Form>
         ),
     ],
-    tags: ["autodocs"],
     argTypes: {
         label: { control: "text" },
         helperText: { control: "text" },

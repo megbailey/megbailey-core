@@ -212,7 +212,6 @@ const Branch = ({
     }, [expandedIds, id]);
 
     function expand() {
-        console.log("expand", id, expandedState, expandedIds, allowMultipleExpanded);
         const newExpandedState = !expandedState;
         setExpandedState(newExpandedState);
         if (allowMultipleExpanded === false) {
@@ -256,7 +255,6 @@ const Branch = ({
         }
     }
 
-    console.log("branch children", id, children);
     return (
         <>
             <div className={dTreeBranchClassName}>
@@ -307,7 +305,6 @@ const Branch = ({
 
 const Leaf = forwardRef<any, LeafProps>(
     ({ className = null, id, level, onKeyDown, isBranch = false, item }, ref) => {
-        console.log(id);
         const { nodeRefs, expandedIds } = useContext(DisclosureTreeContext);
 
         const onKeyArrowUpDown = (e: React.KeyboardEvent<any>) => {

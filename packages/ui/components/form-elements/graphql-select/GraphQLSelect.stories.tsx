@@ -44,7 +44,6 @@ const meta = {
             </MockedProvider>
         ),
     ],
-    tags: ["autodocs"],
     argTypes: {
         label: { control: "text" },
         endpointDataPath: { control: "text" },

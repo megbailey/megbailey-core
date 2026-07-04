@@ -1,14 +1,18 @@
 import React, { forwardRef, ReactNode, MouseEventHandler } from "react";
 import clsx from "clsx";
 import Icon from "../icon/Icon";
+import "./Button.css";
+
+export type ButtonSize = "small" | "medium" | "large" | "normal";
+export type ButtonTheme = "primary" | "secondary" | "danger" | "success";
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
     className?: string;
     text?: string;
     href?: string;
     onClick?: MouseEventHandler<any>;
-    theme?: string;
-    size?: string;
+    theme?: ButtonTheme | string;
+    size?: ButtonSize | string;
     layout?: string;
     active?: boolean;
     inverse?: boolean;

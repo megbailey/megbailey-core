@@ -8,7 +8,6 @@ const meta = {
     parameters: {
         layout: "centered",
     },
-    tags: ["autodocs"],
     argTypes: {
         label: { control: "text" },
         theme: {
@@ -17,7 +16,6 @@ const meta = {
         },
         isDisabled: { control: "boolean" },
         isMulti: { control: "boolean" },
-        isGreedy: { control: "boolean" },
         capitalizeOptions: { control: "boolean" },
     },
     args: {
@@ -26,7 +24,6 @@ const meta = {
         theme: "primary",
         isDisabled: false,
         isMulti: false,
-        isGreedy: true,
         capitalizeOptions: true,
         onChange: fn(),
     },
@@ -39,7 +36,7 @@ export const Default: Story = {};
 
 export const MultiSelect: Story = {
     args: {
-        label: "Select Tags (Multi)",
+        label: "Select Multiple",
         options: [
             { label: "Red", value: "red" },
             { label: "Blue", value: "blue" },
@@ -47,12 +44,5 @@ export const MultiSelect: Story = {
         ],
         isMulti: true,
         initialValue: ["red", "green"],
-    },
-};
-
-export const NonGreedySingle: Story = {
-    args: {
-        label: "Choose Option (Optional)",
-        isGreedy: false,
     },
 };

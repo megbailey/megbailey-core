@@ -1,7 +1,7 @@
 import { useState, type HTMLAttributes } from "react";
 import uniqid from "uniqid";
 
-import Button from "../button/Button";
+import Button from "../../button/Button";
 
 export type ButtonSelectOptionValue = string | number | boolean;
 
@@ -19,7 +19,6 @@ export type ButtonSelectProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange">
     onChange?: (value: ButtonSelectOptionValue | ButtonSelectOptionValue[] | null) => void;
     isDisabled?: boolean;
     isMulti?: boolean;
-    isGreedy?: boolean;
     capitalizeOptions?: boolean;
 };
 
@@ -50,7 +49,6 @@ const ButtonSelect = ({
     onChange,
     isDisabled = false,
     isMulti = false,
-    isGreedy = true,
     capitalizeOptions: _capitalizeOptions = true,
     ...other
 }: ButtonSelectProps) => {
@@ -89,10 +87,7 @@ const ButtonSelect = ({
                                         const nextState = [...selectedOptions, itemValue];
                                         setSelectedOptions(nextState);
                                         if (typeof onChange === "function") onChange(nextState);
-                                    } else if (
-                                        (isMulti || !isGreedy) &&
-                                        selectedOptions.includes(itemValue)
-                                    ) {
+                                    } else if ( isMulti && selectedOptions.includes(itemValue) ) {
                                         const newState = selectedOptions.filter(
                                             (selectedValue) => selectedValue !== itemValue
                                         );
