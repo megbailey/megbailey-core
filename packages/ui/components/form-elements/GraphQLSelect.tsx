@@ -1,50 +1,72 @@
 import { useEffect, useState } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, type DocumentNode } from "@apollo/client";
 import gql from "graphql-tag";
+import type { GroupBase, OnChangeValue, OptionsOrGroups } from "react-select";
 
-import Select from "./Select";
+import InformedSelect, { type InformedSelectOption } from "./InformedSelect";
+import type { FormFieldChangeEvent } from "./types";
+import { isCallableFunction } from "./types";
 
-import {resolveAmbiguousPath} from "../../../utils/objectTraversal";
+import { resolveAmbiguousPath } from "../../../utils/helpers/traversal";
 
-export const parseJSONOptionValue = ( event: any ) => {
-    if ( Array.isArray( event.value ) ) {
-        return event.value.map( (item: any) => JSON.parse( item.value ) )
-    } else if ( event.value?.value ) {
-        return JSON.parse( event.value.value )
-    } else {
-        return [];
-    }
-}
+type GraphQLSelectChangeEvent<TItem> = FormFieldChangeEvent<TItem | TItem[]>;
 
-const isCallableFunction = ( func: any ) => {
-    if ( func && typeof func === 'function' ) 
-        return true
-    console.warn(`${func} prop is not callable function.`)
-    return false;
-}
+export type GraphQLSelectItem = Record<string, unknown> & {
+    label?: string;
+    name?: string;
+    title?: string;
+};
 
-export type GraphQLObjectSelectProps = {
+export type GraphQLSelectProps<TItem extends GraphQLSelectItem = GraphQLSelectItem> = {
     label?: string;
     field?: string;
-    initialValue?: any;
+    initialValue?: TItem | TItem[];
     endpointDataPath?: string;
-    query?: any;
-    queryVariables?: Record<string, any>;
+    query?: DocumentNode;
+    queryVariables?: Record<string, unknown>;
     attachAbortController?: boolean;
-    formatOptionLabel?: (item: any) => string;
-    formatGroupLabel?: (item: any) => string;
-    groupOptionsCallback?: (options: any[]) => any;
+    formatOptionLabel?: (item: TItem) => string;
+    formatGroupLabel?: (group: GroupBase<InformedSelectOption>) => string;
+    groupOptionsCallback?: (
+        options: InformedSelectOption[]
+    ) => OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>>;
     onLoadingChange?: (loading: boolean) => void;
-    onChange?: (value: any) => void;
-    [key: string]: any;
-}
+    onChange?: (event: GraphQLSelectChangeEvent<TItem>) => void;
+    isMulti?: boolean;
+    isDisabled?: boolean;
+    placeholder?: string;
+};
 
-const GraphQLObjectSelect = ({
+/** @deprecated Use GraphQLSelectProps instead */
+export type GraphQLObjectSelectProps<TItem extends GraphQLSelectItem = GraphQLSelectItem> =
+    GraphQLSelectProps<TItem>;
+
+export const parseJSONOptionValue = (
+    event: FormFieldChangeEvent<OnChangeValue<InformedSelectOption, boolean>>
+): unknown => {
+    if (Array.isArray(event.value)) {
+        return event.value.map((item) => JSON.parse(item.value));
+    }
+
+    if (event.value && "value" in event.value) {
+        return JSON.parse(event.value.value);
+    }
+
+    return [];
+};
+
+const GraphQLSelect = <TItem extends GraphQLSelectItem = GraphQLSelectItem>({
     label,
     field,
     initialValue = [],
-    endpointDataPath = 'endpoint.data',
-    query = gql`query { endpoint { ...endpointFragment } }`,
+    endpointDataPath = "endpoint.data",
+    query = gql`
+        query {
+            endpoint {
+                ...endpointFragment
+            }
+        }
+    `,
     queryVariables = {},
     attachAbortController = false,
     formatOptionLabel,
@@ -53,86 +75,123 @@ const GraphQLObjectSelect = ({
     onLoadingChange,
     onChange,
     ...other
-}: GraphQLObjectSelectProps) => {
+}: GraphQLSelectProps<TItem>) => {
+    const [APIData, setAPIData] = useState<TItem[]>([]);
+    const [getAPIData, { loading, error, data }] = useLazyQuery(query);
 
-    const [ APIData, setAPIData ] = useState<any[]>([])
-    //const { getController } = useAbortController()
-    const [ getAPIData, { loading, error, data }]= useLazyQuery(query);
+    const renderLabel = (
+        item: TItem | GroupBase<InformedSelectOption>,
+        functionName: "formatOptionLabel" | "formatGroupLabel"
+    ): string => {
+        if (
+            functionName === "formatOptionLabel" &&
+            formatOptionLabel &&
+            isCallableFunction<(item: TItem) => string>(formatOptionLabel, "formatOptionLabel")
+        ) {
+            return formatOptionLabel(item as TItem);
+        }
 
-    const renderLabel = ( item: any, functionName: 'formatOptionLabel' | 'formatGroupLabel' ) => {
-        if ( functionName === 'formatOptionLabel' && formatOptionLabel && isCallableFunction( formatOptionLabel ) )
-            return formatOptionLabel( item )
-        
-        else if ( functionName === 'formatGroupLabel' && formatGroupLabel && isCallableFunction( formatGroupLabel ) )
-            return formatGroupLabel( item )
+        if (
+            functionName === "formatGroupLabel" &&
+            formatGroupLabel &&
+            isCallableFunction<(group: GroupBase<InformedSelectOption>) => string>(
+                formatGroupLabel,
+                "formatGroupLabel"
+            )
+        ) {
+            return formatGroupLabel(item as GroupBase<InformedSelectOption>);
+        }
 
-        return item.label || item.name || item.title || `Unknown ${functionName === 'formatGroupLabel' ? 'Group' : 'Option'} Label`
-    }
+        const record = item as GraphQLSelectItem;
+        return (
+            record.label ||
+            record.name ||
+            record.title ||
+            `Unknown ${functionName === "formatGroupLabel" ? "Group" : "Option"} Label`
+        );
+    };
 
-    const genSelectOptions = ( data: any ): any => {
-        if ( !data ) return [];
+    const genSelectOptions = (
+        source: TItem | TItem[] | null | undefined
+    ): OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>> => {
+        if (!source) {
+            return [];
+        }
 
-        if ( Array.isArray(data) ) {
-            const options = data.map(item => ({
-                label: renderLabel( item, 'formatOptionLabel' ),
-                value: JSON.stringify( item )
-            }))
+        if (Array.isArray(source)) {
+            const options = source.map((item) => ({
+                label: renderLabel(item, "formatOptionLabel"),
+                value: JSON.stringify(item),
+            }));
 
-            if ( groupOptionsCallback && isCallableFunction( groupOptionsCallback ) )
-                return groupOptionsCallback( options )
+            if (
+                groupOptionsCallback &&
+                isCallableFunction<
+                    (
+                        options: InformedSelectOption[]
+                    ) => OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>>
+                >(groupOptionsCallback, "groupOptionsCallback")
+            ) {
+                return groupOptionsCallback(options);
+            }
 
             return options;
         }
 
-        return {
-            label: renderLabel( data, 'formatGroupLabel' ),
-            value: JSON.stringify( data )
-        }
-    }
+        return [
+            {
+                label: renderLabel(source, "formatGroupLabel"),
+                value: JSON.stringify(source),
+            },
+        ];
+    };
 
     useEffect(() => {
-        getAPIData({ 
+        getAPIData({
             variables: queryVariables,
-            /* context: attachAbortController 
+            /* context: attachAbortController
                 ? { fetchOptions: { signal: getController().signal } }
                 : null */
-        })
-    }, [ JSON.stringify( queryVariables ) ])
+        });
+    }, [JSON.stringify(queryVariables)]);
 
     useEffect(() => {
-        if ( onLoadingChange && typeof onLoadingChange === 'function' )
-            onLoadingChange( loading )
-    }, [ loading ])
+        if (onLoadingChange) {
+            onLoadingChange(loading);
+        }
+    }, [loading, onLoadingChange]);
 
     useEffect(() => {
-        if ( loading === false && data && Object.keys(data).length > 0 ) {
-            const resolvedData = resolveAmbiguousPath( data, endpointDataPath )
-            setAPIData( resolvedData )
-         } else if ( error ) {
+        if (loading === false && data && Object.keys(data).length > 0) {
+            const resolvedData = resolveAmbiguousPath(data, endpointDataPath) as TItem[];
+            setAPIData(resolvedData);
+        } else if (error) {
             console.error(`Unable to fetch GraphQL '${endpointDataPath}' data.`, error);
         }
-    }, [error, data])
-    
-    if ( loading || !data ) return null;
+    }, [error, data, loading, endpointDataPath]);
+
+    if (loading || !data) {
+        return null;
+    }
 
     return (
-        <Select
+        <InformedSelect
             field={field}
             label={label}
-            formatGroupLabel={( group: any ) => renderLabel( group, 'formatGroupLabel' )}
-            options={genSelectOptions( APIData )}
-            initialValue={genSelectOptions( initialValue )}
-            onChange={(e: any) => {
+            formatGroupLabel={(group) => renderLabel(group, "formatGroupLabel")}
+            options={genSelectOptions(APIData)}
+            initialValue={genSelectOptions(initialValue)}
+            onChange={(event) => {
                 if (onChange) {
-                    onChange({ 
-                        ...e,
-                        value: parseJSONOptionValue( e ) 
-                    })
+                    onChange({
+                        ...event,
+                        value: parseJSONOptionValue(event) as TItem | TItem[],
+                    });
                 }
             }}
             {...other}
         />
-    )
+    );
 };
 
-export default GraphQLObjectSelect;
+export default GraphQLSelect;

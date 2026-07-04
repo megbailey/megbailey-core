@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, type InputHTMLAttributes } from "react";
 import clsx from "clsx";
-import { useField } from "informed";
+import { useField, type FieldProps } from "informed";
 import uniqid from "uniqid";
 import dompurify from "dompurify";
 
@@ -8,47 +8,70 @@ import Icon from "../icon/Icon";
 import Button from "../button/Button";
 import Paragraph from "../text/Paragraph";
 import Tooltip from "../tooltip/Tooltip";
+import type { ImageDimensions, UploadResult, ValidationResult } from "./types";
+import { getUploadErrorMessage } from "./types";
 
 export const propValues = {
-    accept: [ "image", "document" ],
-    isMulti: [ true, false ],
-    aspectRatio: [ "1:1", "3:2", "4:3", "4:5", "9:16", "16:9" ]
+    accept: ["image", "document"],
+    isMulti: [true, false],
+    aspectRatio: ["1:1", "3:2", "4:3", "4:5", "9:16", "16:9"],
 };
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
-export type DropzoneProps = {
+export type DropzoneAccept = "image" | "document";
+export type DropzoneAspectRatio = "1:1" | "3:2" | "4:3" | "4:5" | "9:16" | "16:9";
+
+type DropzoneUserProps = {
     field: string;
+    className?: string;
     label?: string;
     helperText?: string;
-    accept?: 'image' | 'document' | string;
+    accept?: DropzoneAccept | string;
     isMulti?: boolean;
     isRequired?: boolean;
     tooltip?: boolean;
     initialValue?: string[];
-    aspectRatio?: '1:1' | '3:2' | '4:3' | '4:5' | '9:16' | '16:9' | string;
+    aspectRatio?: DropzoneAspectRatio | string;
     imageMinimumWidth?: number;
     imageMinimumHeight?: number;
     imageMaximumWidth?: number;
     imageMaximumHeight?: number;
-    onDrop?: (result: any) => void;
-    uploadFilePromise: (file: File) => Promise<any>;
+    onDrop?: (result: UploadResult) => void;
+    uploadFilePromise: (file: File) => Promise<UploadResult>;
     uploadsURL: string;
     onItemRemove?: (index: number) => void;
-    [key: string]: any;
-}
+};
+
+export type DropzoneProps = DropzoneUserProps &
+    Omit<FieldProps<DropzoneUserProps>, "name"> &
+    Omit<
+        InputHTMLAttributes<HTMLInputElement>,
+        "onDrop" | "accept" | "multiple" | "type" | "value" | "defaultValue"
+    >;
 
 const BarLoader = ({ loading }: { loading: boolean }) => {
     if (!loading) return null;
     return (
-        <div style={{ width: '100%', height: '4px', backgroundColor: '#e6f7ff', overflow: 'hidden', position: 'relative', margin: '8px 0' }}>
-            <div style={{
-                width: '30%',
-                height: '100%',
-                backgroundColor: '#1890ff',
-                position: 'absolute',
-                animation: 'loading-bar 1.5s infinite ease-in-out'
-            }} />
+        <div
+            style={{
+                width: "100%",
+                height: "4px",
+                backgroundColor: "#e6f7ff",
+                overflow: "hidden",
+                position: "relative",
+                margin: "8px 0",
+            }}
+        >
+            <div
+                style={{
+                    width: "30%",
+                    height: "100%",
+                    backgroundColor: "#1890ff",
+                    position: "absolute",
+                    animation: "loading-bar 1.5s infinite ease-in-out",
+                }}
+            />
             <style>{`
                 @keyframes loading-bar {
                     0% { left: -30%; }
@@ -61,15 +84,17 @@ const BarLoader = ({ loading }: { loading: boolean }) => {
 };
 
 const Dropzone = (props: DropzoneProps) => {
-    const { render, userProps, ref, fieldState, fieldApi } = useField<any, any>(props as any);
+    const { render, userProps, ref, fieldState, fieldApi } = useField<DropzoneUserProps, string[]>(
+        props as FieldProps<DropzoneUserProps>
+    );
     const { setValue, setError } = fieldApi;
 
-    const { 
+    const {
         className,
         label,
         helperText,
-        accept = 'image',
-        isMulti = false, 
+        accept = "image",
+        isMulti = false,
         isRequired = false,
         tooltip = false,
         initialValue = [],
@@ -83,32 +108,32 @@ const Dropzone = (props: DropzoneProps) => {
         uploadsURL,
         onItemRemove,
         ...other
-    } = userProps
+    } = userProps;
     const [dragOver, setDragOver] = useState(false);
-    const [fileDropError, setFileDropError] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [fileDropError, setFileDropError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const dropzoneID = useMemo(() => `dropzone-${uniqid()}`, []);
     const isProcessingRef = useRef(false);
-    
+
     const acceptedDocumentTypes: Record<string, string> = {
-        'application/pdf': 'pdf',
-        'application/msword': 'doc',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-        'application/vnd.ms-excel': 'xls',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-        'application/vnd.ms-powerpoint': 'ppt',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
-        'text/csv': 'csv'
-    }
+        "application/pdf": "pdf",
+        "application/msword": "doc",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+        "application/vnd.ms-excel": "xls",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+        "application/vnd.ms-powerpoint": "ppt",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+        "text/csv": "csv",
+    };
 
     const acceptedImageTypes: Record<string, string> = {
-        'image/avif': 'avif',
-        'image/gif': 'gif',
-        'image/png': 'png',
-        'image/jpg': 'jpg',
-        'image/jpeg': 'jpeg',
-        'image/webp': 'webp'
-    }
+        "image/avif": "avif",
+        "image/gif": "gif",
+        "image/png": "png",
+        "image/jpg": "jpg",
+        "image/jpeg": "jpeg",
+        "image/webp": "webp",
+    };
 
     const onDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -121,15 +146,15 @@ const Dropzone = (props: DropzoneProps) => {
         e.preventDefault();
         setDragOver(false);
         const selectedFile = e?.dataTransfer?.files[0];
-        if (selectedFile) processSelectedFile(selectedFile)
+        if (selectedFile) processSelectedFile(selectedFile);
     };
 
     const onFilesystemSelect = () => {
         const selectedFile = ref.current?.files?.[0];
-        if (selectedFile) processSelectedFile(selectedFile)
-    }
+        if (selectedFile) processSelectedFile(selectedFile);
+    };
 
-    const processSelectedFile = async ( selectedFile: File ) => {
+    const processSelectedFile = async (selectedFile: File) => {
         if (!selectedFile) return;
 
         if (isProcessingRef.current) return;
@@ -141,37 +166,36 @@ const Dropzone = (props: DropzoneProps) => {
                 setFileDropError(result.error ?? null);
                 return;
             }
-    
+
             const uploadResult = await uploadFile(selectedFile);
             setFileDropError(null);
             if (callback) callback(uploadResult);
         } finally {
             isProcessingRef.current = false;
-            if ( ref.current ) ref.current.value = "";
+            if (ref.current) ref.current.value = "";
         }
-    }
+    };
 
     // Validation occurs BEFORE file is uploaded to the server
-    async function validateFile( file: File ) {
-        console.log(file)
+    async function validateFile(file: File): Promise<ValidationResult> {
+        console.log(file);
 
         // File not provided
-        if (!file ) {
+        if (!file) {
             return { valid: false, error: "No file selected." };
-        } 
+        }
 
         // 1. File Type validation
-        const typeValidation = validateFileType(file)
+        const typeValidation = validateFileType(file);
         if (!typeValidation.valid) return typeValidation;
 
         // 2. Size validation
         const sizeValidation = validateFileSize(file);
         if (!sizeValidation.valid) return sizeValidation;
 
-
         // 3. Image-specific validations
-        if (accept === 'image') {
-            const imageMeta = await getImageMetadata(file).catch(() => null) as { width: number; height: number } | null;
+        if (accept === "image") {
+            const imageMeta = await getImageMetadata(file).catch(() => null);
 
             if (!imageMeta) {
                 return { valid: false, error: "Unable to read image file." };
@@ -187,49 +211,47 @@ const Dropzone = (props: DropzoneProps) => {
         return { valid: true, error: null };
     }
 
-    function validateFileType(file: File) {
-        if (accept === 'image' && !Object.keys(acceptedImageTypes).includes(file.type)) {
+    function validateFileType(file: File): ValidationResult {
+        if (accept === "image" && !Object.keys(acceptedImageTypes).includes(file.type)) {
             return {
                 valid: false,
-                error: `Please provide an image. Accepted: ${Object.values(acceptedImageTypes).join(', ')}`
+                error: `Please provide an image. Accepted: ${Object.values(acceptedImageTypes).join(", ")}`,
             };
-            
         }
-    
-        if (accept === 'document' && !Object.keys(acceptedDocumentTypes).includes(file.type)) {
+
+        if (accept === "document" && !Object.keys(acceptedDocumentTypes).includes(file.type)) {
             return {
                 valid: false,
-                error: `Please provide a document. Accepted: ${Object.values(acceptedDocumentTypes).join(', ')}`
+                error: `Please provide a document. Accepted: ${Object.values(acceptedDocumentTypes).join(", ")}`,
             };
-            
         }
-    
+
         return { valid: true };
     }
 
-    function validateFileSize (file: File) {
+    function validateFileSize(file: File): ValidationResult {
         if (file.size > MAX_FILE_SIZE) {
             const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
             return {
                 valid: false,
-                error: `${accept} is too large for upload! File size is ${sizeMB}MB.\nFile size limit is 2MB.`
+                error: `${accept} is too large for upload! File size is ${sizeMB}MB.\nFile size limit is 2MB.`,
             };
         }
         return { valid: true };
     }
 
-    async function getImageMetadata(file: File) {
+    async function getImageMetadata(file: File): Promise<ImageDimensions> {
         return new Promise((resolve, reject) => {
             const img = new Image();
-    
+
             img.onload = () => {
                 resolve({
                     width: img.naturalWidth,
-                    height: img.naturalHeight
+                    height: img.naturalHeight,
                 });
                 URL.revokeObjectURL(img.src);
             };
-    
+
             img.onerror = (err) => {
                 URL.revokeObjectURL(img.src);
                 reject(err);
@@ -238,48 +260,52 @@ const Dropzone = (props: DropzoneProps) => {
         });
     }
 
-    function validateImageDimensions({ width, height }: { width: number; height: number }) {
-        let dimension_error = ''
-        if ( imageMinimumWidth && imageMinimumHeight ) {
-            dimension_error += ` Minimum ${imageMinimumWidth}px (width) x ${imageMinimumHeight}px (height)`
-        } else if ( imageMinimumWidth || imageMinimumHeight ) {
-            dimension_error += imageMinimumWidth ? ` Minimum ${imageMinimumWidth}px (width)` : ''
-            dimension_error += imageMinimumHeight ? ` Minimum ${imageMinimumHeight}px (height)` : ''
-        } 
-
-        if ( imageMaximumWidth && imageMaximumHeight ) {
-            dimension_error += ` Maximum ${imageMaximumWidth}px (width) x ${imageMaximumHeight}px (height)`
-        } else if ( imageMaximumWidth || imageMaximumHeight ) {
-            dimension_error += imageMaximumWidth ? ` Maximum ${imageMaximumWidth}px (width)` : ''
-            dimension_error += imageMaximumHeight ? ` Maximum ${imageMaximumHeight}px (height)` : ''
+    function validateImageDimensions({ width, height }: ImageDimensions): ValidationResult {
+        let dimension_error = "";
+        if (imageMinimumWidth && imageMinimumHeight) {
+            dimension_error += ` Minimum ${imageMinimumWidth}px (width) x ${imageMinimumHeight}px (height)`;
+        } else if (imageMinimumWidth || imageMinimumHeight) {
+            dimension_error += imageMinimumWidth ? ` Minimum ${imageMinimumWidth}px (width)` : "";
+            dimension_error += imageMinimumHeight
+                ? ` Minimum ${imageMinimumHeight}px (height)`
+                : "";
         }
 
-        dimension_error = `Image did not meet the dimension requirement(s): ${dimension_error}`
+        if (imageMaximumWidth && imageMaximumHeight) {
+            dimension_error += ` Maximum ${imageMaximumWidth}px (width) x ${imageMaximumHeight}px (height)`;
+        } else if (imageMaximumWidth || imageMaximumHeight) {
+            dimension_error += imageMaximumWidth ? ` Maximum ${imageMaximumWidth}px (width)` : "";
+            dimension_error += imageMaximumHeight
+                ? ` Maximum ${imageMaximumHeight}px (height)`
+                : "";
+        }
+
+        dimension_error = `Image did not meet the dimension requirement(s): ${dimension_error}`;
 
         if (imageMinimumWidth && width < imageMinimumWidth) {
             return { valid: false, error: dimension_error };
         }
-    
+
         if (imageMaximumWidth && width > imageMaximumWidth) {
             return { valid: false, error: dimension_error };
         }
-    
+
         if (imageMinimumHeight && height < imageMinimumHeight) {
             return { valid: false, error: dimension_error };
         }
-    
+
         if (imageMaximumHeight && height > imageMaximumHeight) {
             return { valid: false, error: dimension_error };
         }
-    
+
         return { valid: true };
     }
 
-    function validateAspectRatio({ width, height }: { width: number; height: number }) {
+    function validateAspectRatio({ width, height }: ImageDimensions): ValidationResult {
         if (!aspectRatio) return { valid: true };
-    
+
         const ratio = width / height;
-    
+
         const ratios: Record<string, number> = {
             "1:1": 1,
             "3:2": 3 / 2,
@@ -288,73 +314,71 @@ const Dropzone = (props: DropzoneProps) => {
             "9:16": 9 / 16,
             "16:9": 16 / 9,
         };
-    
+
         const expected = ratios[aspectRatio];
-    
+
         if (!expected) return { valid: true };
-    
+
         const tolerance = 0.01; // avoid floating point issues
-    
+
         if (Math.abs(ratio - expected) > tolerance) {
             return {
                 valid: false,
-                error: `Image must have aspect ratio ${aspectRatio}.`
+                error: `Image must have aspect ratio ${aspectRatio}.`,
             };
         }
-    
+
         return { valid: true };
     }
 
-
-    function uploadFile( file: File ) {
-        setIsLoading(true)
+    function uploadFile(file: File) {
+        setIsLoading(true);
         // uploadFilePromise must return a string of the filename that was uploaded
-        return uploadFilePromise(file).then(( result: any ) => {
-            const filename = result?.src ?? result
-            const currentValue = Array.isArray(fieldState.value) ? fieldState.value : [];
-            if ( isMulti ) {
-                setValue([ ...currentValue, filename ])
-            } else {
-                setValue([ filename ])
-            }
-            setError(null)
-            setIsLoading(false)
-            return result;
-        }).catch( (error: any) => {    
-            const status = error?.response?.status ?? 'Unknown';
-            const statusText = error?.response?.statusText ?? 'Error';
-            const message = error?.response?.message ?? 'An error occurred during upload.';
-            setFileDropError(`${status} ${statusText}. ${message}`)
-            setIsLoading(false)
-            throw error;
-        })
+        return uploadFilePromise(file)
+            .then((result: UploadResult) => {
+                const filename = typeof result === "string" ? result : result.src;
+                const currentValue = Array.isArray(fieldState.value) ? fieldState.value : [];
+                if (isMulti) {
+                    setValue([...currentValue, filename]);
+                } else {
+                    setValue([filename]);
+                }
+                setError(null);
+                setIsLoading(false);
+                return result;
+            })
+            .catch((error: unknown) => {
+                setFileDropError(getUploadErrorMessage(error));
+                setIsLoading(false);
+                throw error;
+            });
     }
 
     function removeItem(index: number) {
         const currentValue = Array.isArray(fieldState.value) ? fieldState.value : [];
-        let copiedState = [ ...currentValue ]
-        copiedState.splice(index, 1)
-        setValue(copiedState)
-        if (onItemRemove) onItemRemove(index)
+        let copiedState = [...currentValue];
+        copiedState.splice(index, 1);
+        setValue(copiedState);
+        if (onItemRemove) onItemRemove(index);
     }
 
     const valueArray = Array.isArray(fieldState.value) ? fieldState.value : [];
 
-    return render (
-        <div className={clsx( 'form-element', className )}>
-            { label && (
-                <label 
-                    className={clsx( 'form-element__label', className, { 
-                        [ "form__label--required" ]: isRequired === true
-                    } )}
+    return render(
+        <div className={clsx("form-element", className)}>
+            {label && (
+                <label
+                    className={clsx("form-element__label", className, {
+                        ["form__label--required"]: isRequired === true,
+                    })}
                     htmlFor={dropzoneID}
                 >
                     {label}
-                    {(tooltip && helperText) && <Tooltip position='right' text={helperText}/>}
+                    {tooltip && helperText && <Tooltip position="right" text={helperText} />}
                 </label>
             )}
-            {(( !isMulti && valueArray.length <= 0 ) || isMulti ) && ( 
-                <div 
+            {((!isMulti && valueArray.length <= 0) || isMulti) && (
+                <div
                     className={clsx("dropzone", {
                         [`dropzone__error`]: fieldState.error,
                     })}
@@ -369,101 +393,113 @@ const Dropzone = (props: DropzoneProps) => {
                         type="file"
                         style={{ display: "none" }}
                         onChange={onFilesystemSelect}
-                        accept={ accept === "image" 
-                            ? Object.keys(acceptedImageTypes).join(',')
-                            : Object.keys(acceptedDocumentTypes).join(',')
+                        accept={
+                            accept === "image"
+                                ? Object.keys(acceptedImageTypes).join(",")
+                                : Object.keys(acceptedDocumentTypes).join(",")
                         }
                         multiple={isMulti}
                     />
-                    { isLoading && <BarLoader loading={isLoading} /> }
-                    { dragOver 
-                        ? <Paragraph>{`Release to Upload`} <br/> or</Paragraph> 
-                        : <Paragraph>{`Drag ${accept}${isMulti ? 's' : ''} to Upload`} <br/> or</Paragraph>
-                    }
-                    <Button 
-                        text={'Browse Files'}
+                    {isLoading && <BarLoader loading={isLoading} />}
+                    {dragOver ? (
+                        <Paragraph>
+                            {`Release to Upload`} <br /> or
+                        </Paragraph>
+                    ) : (
+                        <Paragraph>
+                            {`Drag ${accept}${isMulti ? "s" : ""} to Upload`} <br /> or
+                        </Paragraph>
+                    )}
+                    <Button
+                        text={"Browse Files"}
                         onClick={() => {
                             const inputEl = document.getElementById(dropzoneID);
                             if (inputEl) inputEl.click();
                         }}
                     />
-                    { fileDropError !== null && <Paragraph className="dropzone__error">Error: {fileDropError}</Paragraph>}
+                    {fileDropError !== null && (
+                        <Paragraph className="dropzone__error">Error: {fileDropError}</Paragraph>
+                    )}
                 </div>
             )}
             <div className="dropzone__items">
-                { valueArray.length > 0 && (
+                {valueArray.length > 0 && (
                     <ul>
-                        { valueArray.map((item: string, index: number) => {
+                        {valueArray.map((item: string, index: number) => {
                             return (
                                 <DropItem
                                     key={index}
                                     type={accept}
                                     src={item}
                                     uploadsURL={uploadsURL}
-                                    onRemove={()=> removeItem(index)}
+                                    onRemove={() => removeItem(index)}
                                 />
-                            )
+                            );
                         })}
                     </ul>
                 )}
             </div>
-            {( !tooltip && helperText )
-                ? <span className="dropzone__helper form-element__helper" dangerouslySetInnerHTML={{ __html: dompurify.sanitize(helperText) }}></span> 
-                : null
-            }
-            { fieldState.error 
-                ? <span className="form-element__error-text">{String(fieldState.error)}</span>
-                : null
-            }
+            {!tooltip && helperText ? (
+                <span
+                    className="dropzone__helper form-element__helper"
+                    dangerouslySetInnerHTML={{ __html: dompurify.sanitize(helperText) }}
+                ></span>
+            ) : null}
+            {fieldState.error ? (
+                <span className="form-element__error-text">{String(fieldState.error)}</span>
+            ) : null}
         </div>
     );
-}
+};
 
-const DropItem = (props: { type: string; src: string; uploadsURL: string; onRemove: () => void }) => {
-    const {
-        type,
-        src,
-        uploadsURL,
-        onRemove,
-    } = props
-    const [ itemSize, setItemSize ] = useState<string | null>(null)
-    const [ itemDimensions, setItemDimensions ] = useState<{ width: number; height: number } | null>(null)
-    const itemRef = useRef<HTMLImageElement>(null)
+const DropItem = (props: {
+    type: string;
+    src: string;
+    uploadsURL: string;
+    onRemove: () => void;
+}) => {
+    const { type, src, uploadsURL, onRemove } = props;
+    const [itemSize, setItemSize] = useState<string | null>(null);
+    const [itemDimensions, setItemDimensions] = useState<{ width: number; height: number } | null>(
+        null
+    );
+    const itemRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
         const controller = new AbortController();
         const signal = controller.signal;
-        
-        fetch(`${uploadsURL}/${src}`, { 
-            signal 
+
+        fetch(`${uploadsURL}/${src}`, {
+            signal,
         })
-        .then(r => r.blob())
-        .then(r => {
-            setItemSize(`${(r.size / 1024).toFixed(1)}`)
-        })
-        .catch(e => console.log(e));
-        
-        if ( itemRef.current ) {
-            itemRef.current.onload = function() {
-                if ( itemRef.current && type === 'image' ) {
-                    setItemDimensions({ width: itemRef.current.naturalWidth, height: itemRef.current.naturalHeight})
+            .then((r) => r.blob())
+            .then((r) => {
+                setItemSize(`${(r.size / 1024).toFixed(1)}`);
+            })
+            .catch((e) => console.log(e));
+
+        if (itemRef.current) {
+            itemRef.current.onload = function () {
+                if (itemRef.current && type === "image") {
+                    setItemDimensions({
+                        width: itemRef.current.naturalWidth,
+                        height: itemRef.current.naturalHeight,
+                    });
                 }
-            }
+            };
         }
         // Abort promise if component unmounted
         return () => controller.abort();
-    }, [src, type, uploadsURL])
-   
+    }, [src, type, uploadsURL]);
+
     return (
-        <li className="dropzone__item" >
-           {type === 'document' && ( 
-                <Icon name={'file'} />
-            )}
-            {type === 'image' && ( 
-                <img 
+        <li className="dropzone__item">
+            {type === "document" && <Icon name={"file"} />}
+            {type === "image" && (
+                <img
                     ref={itemRef}
                     className="dropzone__image-thumbnail"
-                    src={`${uploadsURL}/${src}`} 
+                    src={`${uploadsURL}/${src}`}
                     alt="the uploaded image"
                 />
             )}
@@ -471,7 +507,9 @@ const DropItem = (props: { type: string; src: string; uploadsURL: string; onRemo
                 <div className="dropzone__filename">{src}</div>
                 <div className="dropzone__file-stats">
                     {itemDimensions && (
-                        <span className="dropzone__image-dimension">{itemDimensions.width}px x {itemDimensions.height}px</span>
+                        <span className="dropzone__image-dimension">
+                            {itemDimensions.width}px x {itemDimensions.height}px
+                        </span>
                     )}
                     <span className="dropzone__file-size">{itemSize}KB</span>
                 </div>
@@ -484,9 +522,9 @@ const DropItem = (props: { type: string; src: string; uploadsURL: string; onRemo
                     theme: "solid",
                 }}
                 onClick={onRemove}
-            />          
+            />
         </li>
-    )
-}
+    );
+};
 
 export default Dropzone;

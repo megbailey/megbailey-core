@@ -1,100 +1,110 @@
-import { useState } from "react";
+import { useState, type HTMLAttributes } from "react";
 import uniqid from "uniqid";
 
 import Button from "../button/Button";
 
-export type ButtonSelectOption = string | { label: string; value: any };
+export type ButtonSelectOptionValue = string | number | boolean;
 
-export type ButtonSelectProps = {
+export type ButtonSelectOption =
+    ButtonSelectOptionValue | { label: string; value: ButtonSelectOptionValue };
+
+export type ButtonSelectTheme = "primary" | "secondary" | "danger" | "success";
+
+export type ButtonSelectProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
     label?: string;
     options?: ButtonSelectOption[];
-    theme?: string;
-    initialValue?: any | any[];
+    theme?: ButtonSelectTheme | string;
+    initialValue?: ButtonSelectOptionValue | ButtonSelectOptionValue[] | null;
     tooltip?: boolean;
-    onChange?: (value: any) => void;
+    onChange?: (value: ButtonSelectOptionValue | ButtonSelectOptionValue[] | null) => void;
     isDisabled?: boolean;
     isMulti?: boolean;
     isGreedy?: boolean;
     capitalizeOptions?: boolean;
-    [key: string]: any;
+};
+
+function getOptionParts(item: ButtonSelectOption): {
+    label: string;
+    value: ButtonSelectOptionValue;
+} {
+    if (typeof item === "object" && item !== null) {
+        return {
+            label: item.label,
+            value: item.value,
+        };
+    }
+
+    const itemStr = String(item);
+    return {
+        label: itemStr,
+        value: item,
+    };
 }
 
 const ButtonSelect = ({
     label,
     options = [],
-    theme = 'primary',
+    theme = "primary",
     initialValue,
-    tooltip,
+    tooltip: _tooltip,
     onChange,
     isDisabled = false,
     isMulti = false,
     isGreedy = true,
-    capitalizeOptions = true,
+    capitalizeOptions: _capitalizeOptions = true,
     ...other
 }: ButtonSelectProps) => {
-   
-    const [selectedOptions, setSelectedOptions] = useState<any[]>(
-        Array.isArray(initialValue) ? initialValue : [ initialValue ]
+    const [selectedOptions, setSelectedOptions] = useState<ButtonSelectOptionValue[]>(
+        Array.isArray(initialValue) ? initialValue : [initialValue as ButtonSelectOptionValue]
     );
     const id = uniqid("button-selector");
 
     return (
         <div className="btn-selector" {...other}>
-            { label && (
-                <label
-                    id={id}
-                    className={'form__label btn-selector__label'}
-                >
+            {label && (
+                <label id={id} className={"form__label btn-selector__label"}>
                     {label}
                 </label>
             )}
             <div className="btn-selector__options">
                 <div className="btn-group">
                     {options.map((item, index) => {
-                        let itemLabel: string;
-                        let itemValue: any;
-                        if ( typeof item === "object" && item !== null ) {
-                            itemLabel = item.label;
-                            itemValue = item.value;
-                        } else {
-                            const itemStr = String(item);
-                            itemLabel = itemStr;
-                            itemValue = item;
-                        }
+                        const { label: itemLabel, value: itemValue } = getOptionParts(item);
 
                         return (
                             <Button
                                 key={`button-selector-${index}`}
                                 theme={theme}
-                                size={'small'}
-                                layout={'inline'}
-                                active={ selectedOptions.includes(itemValue) }
+                                size={"small"}
+                                layout={"inline"}
+                                active={selectedOptions.includes(itemValue)}
                                 inverse={true}
                                 text={itemLabel}
                                 onClick={() => {
-                                    if ( isDisabled ) return null;
-                                    if ( !isMulti && !selectedOptions.includes(itemValue) ) {
-                                        // greedy select
-                                        setSelectedOptions([ itemValue ])
-                                        typeof onChange === 'function' ? onChange(itemValue) : null
-                                    } else if ( isMulti && !selectedOptions.includes(itemValue) ) {
-                                        // if value isn't included, add it to state
-                                        setSelectedOptions([ ...selectedOptions, itemValue ])
-                                        typeof onChange === 'function' ? onChange([ ...selectedOptions, itemValue ]) : null
-                                    } else if (( isMulti || !isGreedy ) && selectedOptions.includes(itemValue) ) {
-                                        // if value is included in state, remove it from state
-                                        const newState = selectedOptions.filter( selectedValue => selectedValue !== itemValue )
-                                        setSelectedOptions(newState)
-                                        typeof onChange === 'function' 
-                                            ? onChange( newState.length === 0 
-                                                ? null 
-                                                : newState
-                                            ) : null
+                                    if (isDisabled) return null;
+                                    if (!isMulti && !selectedOptions.includes(itemValue)) {
+                                        setSelectedOptions([itemValue]);
+                                        if (typeof onChange === "function") onChange(itemValue);
+                                    } else if (isMulti && !selectedOptions.includes(itemValue)) {
+                                        const nextState = [...selectedOptions, itemValue];
+                                        setSelectedOptions(nextState);
+                                        if (typeof onChange === "function") onChange(nextState);
+                                    } else if (
+                                        (isMulti || !isGreedy) &&
+                                        selectedOptions.includes(itemValue)
+                                    ) {
+                                        const newState = selectedOptions.filter(
+                                            (selectedValue) => selectedValue !== itemValue
+                                        );
+                                        setSelectedOptions(newState);
+                                        if (typeof onChange === "function") {
+                                            onChange(newState.length === 0 ? null : newState);
+                                        }
                                     }
                                 }}
                                 aria-labelledby={id}
                             />
-                        )
+                        );
                     })}
                 </div>
             </div>

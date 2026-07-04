@@ -1,23 +1,24 @@
-import { useState } from 'react';
-import Tooltip from '../tooltip/Tooltip';
+import { useState, type HTMLAttributes } from "react";
+import Tooltip from "../tooltip/Tooltip";
+
+import type { ToggleSwitchChangeEvent } from "./types";
 
 export const propValues = {
-    initalValue: [true, false],
+    initialValue: [true, false],
 };
 
-export type ToggleSwitchProps = {
+export type ToggleSwitchProps = Omit<HTMLAttributes<HTMLDivElement>, "onClick"> & {
     label?: string;
     helperText?: string;
     initialValue?: boolean;
     tooltip?: boolean;
     onLabel?: string;
     offLabel?: string;
-    onClick?: (event: any) => void;
-    [key: string]: any;
-}
+    onClick?: (event: ToggleSwitchChangeEvent) => void;
+};
 
-const ToggleSwitch = ( props: ToggleSwitchProps ) => {
-   const {
+const ToggleSwitch = (props: ToggleSwitchProps) => {
+    const {
         label,
         helperText,
         initialValue = false,
@@ -26,34 +27,38 @@ const ToggleSwitch = ( props: ToggleSwitchProps ) => {
         offLabel = "No",
         onClick,
         ...other
-   } = props
-    const [ switchState, setSwitchState ] = useState(initialValue)
+    } = props;
+    const [switchState, setSwitchState] = useState(initialValue);
 
     return (
-        <div className='form-element c-form-element--inline' {...other}>
+        <div className="form-element c-form-element--inline" {...other}>
             {label && (
-                <span 
-                    className="form-element__label" 
-                >
-                    <div dangerouslySetInnerHTML={{ __html: label }} ></div>
-                    {(tooltip && helperText) && <Tooltip position="right" text={helperText}/>}
+                <span className="form-element__label">
+                    <div dangerouslySetInnerHTML={{ __html: label }}></div>
+                    {tooltip && helperText && <Tooltip position="right" text={helperText} />}
                 </span>
             )}
-            <div 
-                role="switch" 
-                className='c-switch' aria-checked={switchState} tabIndex={0}
-                onClick={e => {
-                    if ( typeof onClick === 'function' ) {
-                        const customEvent = { ...e, value: !switchState } as any;
-                        onClick(customEvent)
+            <div
+                role="switch"
+                className="c-switch"
+                aria-checked={switchState}
+                tabIndex={0}
+                onClick={(event) => {
+                    const nextValue = !switchState;
+                    if (typeof onClick === "function") {
+                        onClick(Object.assign(event, { value: nextValue }));
                     }
-                    setSwitchState(!switchState)
+                    setSwitchState(nextValue);
                 }}
             >
                 <span className="switch">
                     <span className="c-switch__circle"></span>
-                    <span className="c-switch--on" aria-hidden="true">{onLabel}</span>
-                    <span className="c-switch--off" aria-hidden="true">{offLabel}</span>
+                    <span className="c-switch--on" aria-hidden="true">
+                        {onLabel}
+                    </span>
+                    <span className="c-switch--off" aria-hidden="true">
+                        {offLabel}
+                    </span>
                 </span>
             </div>
         </div>

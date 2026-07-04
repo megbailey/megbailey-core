@@ -1,43 +1,42 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import DisclosureTree, { DisclosureTreeItemProps } from './DisclosureTree';
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import DisclosureTree, { DisclosureTreeItemProps } from "./DisclosureTree";
 
 const mockItems: DisclosureTreeItemProps[] = [
-  {
-    id: '1',
-    parent_id: null,
-    item: ( <p>Item 1</p> ),
-    items: [
-        {
-            id: '30',
-            parent_id: '1',
-            item: ( <p>Item 1a</p> )
-        },
-        {
-            id: '31',
-            parent_id: '1',
-            item: ( <p>Item 1b</p> )
-        },
-
-    ],
-  },
-  {
-    id: '2',
-    parent_id: null,
-    //children: [],
-    item: ( <p>Item 2</p> )
-  },
-  {
-    id: '3',
-    parent_id: null,
-    //children: [],
-    item: ( <p>Item 3</p> )
-  },
-  {
-    id: '4',
-    parent_id: null,
-    //children: [],
-    item: ( <p>Item 4</p> ),
-  },
+    {
+        id: "1",
+        parent_id: null,
+        item: <p>Item 1</p>,
+        items: [
+            {
+                id: "30",
+                parent_id: "1",
+                item: <p>Item 1a</p>,
+            },
+            {
+                id: "31",
+                parent_id: "1",
+                item: <p>Item 1b</p>,
+            },
+        ],
+    },
+    {
+        id: "2",
+        parent_id: null,
+        //children: [],
+        item: <p>Item 2</p>,
+    },
+    {
+        id: "3",
+        parent_id: null,
+        //children: [],
+        item: <p>Item 3</p>,
+    },
+    {
+        id: "4",
+        parent_id: null,
+        //children: [],
+        item: <p>Item 4</p>,
+    },
 ];
 
 /* const renderItem = (item: any, isBranch: boolean, expanded: boolean) => {
@@ -71,21 +70,22 @@ const mockItems: DisclosureTreeItemProps[] = [
 }; */
 
 const meta = {
-    title: 'Components/DisclosureTree',
+    title: "Components/DisclosureTree",
     component: DisclosureTree,
     parameters: {
-        layout: 'padded',
+        layout: "padded",
     },
     argTypes: {
-        allowMultipleExpanded: { control: 'boolean' },
-        nested: { 
-            control: 'boolean',
-            description: 'When true, items with children are rendered as expandable branches. When false, all items render flat.',
+        allowMultipleExpanded: { control: "boolean" },
+        nested: {
+            control: "boolean",
+            description:
+                "When true, items with children are rendered as expandable branches. When false, all items render flat.",
         },
-        collapseOnBlur: { control: 'boolean' },
+        collapseOnBlur: { control: "boolean" },
     },
     args: {
-        id: 'story-tree',
+        id: "story-tree",
         items: mockItems,
         allowMultipleExpanded: true,
         nested: true,
@@ -97,4 +97,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-

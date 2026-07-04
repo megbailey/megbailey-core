@@ -1,10 +1,14 @@
 {
-  "name": "megbailey-core",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "react-select": "^5.10.2"
-  }
+    "name": "megbailey-core",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "format": "prettier --write \"**/*.{ts,tsx}\"",
+        "format:check": "prettier --check \"**/*.{ts,tsx}\""
+    },
+    "devDependencies": {
+        "prettier": "^3.6.2"
+    }
 }
