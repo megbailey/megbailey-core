@@ -37,10 +37,6 @@ export type GraphQLSelectProps<TItem extends GraphQLSelectItem = GraphQLSelectIt
     placeholder?: string;
 };
 
-/** @deprecated Use GraphQLSelectProps instead */
-export type GraphQLObjectSelectProps<TItem extends GraphQLSelectItem = GraphQLSelectItem> =
-    GraphQLSelectProps<TItem>;
-
 export const parseJSONOptionValue = (
     event: FormFieldChangeEvent<OnChangeValue<InformedSelectOption, boolean>>
 ): unknown => {

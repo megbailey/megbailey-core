@@ -8,6 +8,13 @@ const meta = {
     parameters: {
         layout: "centered",
     },
+    decorators: [
+        (Story) => (
+            <div style={{ width: "280px" }}>
+                <Story />
+            </div>
+        ),
+    ],
     argTypes: {
         label: { control: "text" },
         helperText: { control: "text" },
@@ -21,8 +28,8 @@ const meta = {
         helperText: "Send me sound notifications for updates",
         initialValue: false,
         tooltip: true,
-        onLabel: "Yes",
-        offLabel: "No",
+        onLabel: "On",
+        offLabel: "Off",
         onClick: fn(),
     },
 } satisfies Meta<typeof ToggleSwitch>;
@@ -35,12 +42,14 @@ export const Default: Story = {};
 export const WithoutTooltip: Story = {
     args: {
         tooltip: false,
+        helperText: "Helper text shown below the switch without an info icon.",
     },
 };
 
 export const CustomLabels: Story = {
     args: {
-        onLabel: "ON",
-        offLabel: "OFF",
+        onLabel: "Enabled",
+        offLabel: "Disabled",
+        initialValue: true,
     },
 };

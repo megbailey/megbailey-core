@@ -1,7 +1,9 @@
-import { useState, type HTMLAttributes } from "react";
+import { useState, type HTMLAttributes, type MouseEvent } from "react";
+import clsx from "clsx";
 import Tooltip from "../../tooltip/Tooltip";
 
 import type { ToggleSwitchChangeEvent } from "../types";
+import "./ToggleSwitch.css";
 
 export const propValues = {
     initialValue: [true, false],
@@ -23,44 +25,52 @@ const ToggleSwitch = (props: ToggleSwitchProps) => {
         helperText,
         initialValue = false,
         tooltip = false,
-        onLabel = "Yes",
-        offLabel = "No",
+        onLabel = "On",
+        offLabel = "Off",
         onClick,
+        className,
         ...other
     } = props;
     const [switchState, setSwitchState] = useState(initialValue);
 
+    const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
+        const nextValue = !switchState;
+        if (typeof onClick === "function") {
+            onClick(Object.assign(event, { value: nextValue }));
+        }
+        setSwitchState(nextValue);
+    };
+
     return (
-        <div className="form-element c-form-element--inline" {...other}>
+        <div className={clsx("toggle-switch", className)} {...other}>
             {label && (
-                <span className="form-element__label">
-                    <div dangerouslySetInnerHTML={{ __html: label }}></div>
-                    {tooltip && helperText && <Tooltip position="right" text={helperText} />}
-                </span>
+                <div className="toggle-switch__label">
+                    <span dangerouslySetInnerHTML={{ __html: label }}></span>
+                </div>
             )}
-            <div
+
+            <button
+                type="button"
                 role="switch"
-                className="c-switch"
+                className={clsx("toggle-switch__track", {
+                    "toggle-switch__track--on": switchState,
+                })}
                 aria-checked={switchState}
-                tabIndex={0}
-                onClick={(event) => {
-                    const nextValue = !switchState;
-                    if (typeof onClick === "function") {
-                        onClick(Object.assign(event, { value: nextValue }));
-                    }
-                    setSwitchState(nextValue);
-                }}
+                aria-label={label ? undefined : switchState ? onLabel : offLabel}
+                onClick={handleToggle}
             >
-                <span className="switch">
-                    <span className="c-switch__circle"></span>
-                    <span className="c-switch--on" aria-hidden="true">
-                        {onLabel}
-                    </span>
-                    <span className="c-switch--off" aria-hidden="true">
-                        {offLabel}
-                    </span>
+                <span className="toggle-switch__thumb" aria-hidden="true" />
+                <span className="toggle-switch__sr-only">
+                    {switchState ? onLabel : offLabel}
                 </span>
-            </div>
+            </button>
+
+            {helperText && (
+                <div className="toggle-switch__helper">
+                    {tooltip && <Tooltip position="top" text={helperText} />}
+                    {!tooltip && <span className="toggle-switch__helper-text">{helperText}</span>}
+                </div>
+            )}
         </div>
     );
 };

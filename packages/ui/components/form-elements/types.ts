@@ -23,7 +23,7 @@ export type UploadErrorResponse = {
     };
 };
 
-export type ToggleSwitchChangeEvent = MouseEvent<HTMLDivElement> & {
+export type ToggleSwitchChangeEvent = MouseEvent<HTMLButtonElement> & {
     value: boolean;
 };
 

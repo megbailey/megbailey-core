@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MockedProvider } from "@apollo/client/testing";
+import { Form } from "informed";
 import { fn } from "storybook/test";
 import gql from "graphql-tag";
 import GraphQLSelect from "./GraphQLSelect";
@@ -38,9 +39,11 @@ const meta = {
     decorators: [
         (Story) => (
             <MockedProvider mocks={mocks} addTypename={false}>
-                <div style={{ width: "300px" }}>
-                    <Story />
-                </div>
+                <Form>
+                    <div style={{ width: "300px" }}>
+                        <Story />
+                    </div>
+                </Form>
             </MockedProvider>
         ),
     ],
