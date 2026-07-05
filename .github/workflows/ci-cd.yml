@@ -11,79 +11,80 @@ on:
 permissions:
     contents: read
     packages: write
+    id-token: write
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+    build-and-test:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20"
-            cache: npm
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Build
-        run: npm run build
+            - name: Build
+              run: npm run build
 
-      - name: Test
-        run: npm test
+            - name: Test
+              run: npm test
 
-  publish:
-    needs: build-and-test
-    runs-on: ubuntu-latest
+    publish:
+        needs: build-and-test
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Build
-        run: npm run build
+            - name: Build
+              run: npm run build
 
-      - name: Setup Node.js for npm
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20"
-            registry-url: https://registry.npmjs.org
+            - name: Upgrade npm for trusted publishing
+              run: npm install -g npm@latest
 
-      - name: Publish @megbailey/utils to npm
-        run: npm publish --workspace=@megbailey/utils --access public
-        env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+            - name: Setup Node.js for npm (OIDC)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  registry-url: https://registry.npmjs.org
 
-      - name: Publish @megbailey/ui to npm
-        run: npm publish --workspace=@megbailey/ui --access public
-        env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+            - name: Publish @megbailey/utils to npm
+              run: npm publish --workspace=@megbailey/utils --access public
 
-      - name: Setup Node.js for GitHub Packages
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20"
-            registry-url: https://npm.pkg.github.com
-            scope: "@megbailey"
+            - name: Publish @megbailey/ui to npm
+              run: npm publish --workspace=@megbailey/ui --access public
 
-      - name: Publish @megbailey/utils to GitHub Packages
-        run: npm publish --workspace=@megbailey/utils
-        env:
-            NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Setup Node.js for GitHub Packages
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  registry-url: https://npm.pkg.github.com
+                  scope: "@megbailey"
 
-      - name: Publish @megbailey/ui to GitHub Packages
-        run: npm publish --workspace=@megbailey/ui
-        env:
-            NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Publish @megbailey/utils to GitHub Packages
+              run: npm publish --workspace=@megbailey/utils
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Publish @megbailey/ui to GitHub Packages
+              run: npm publish --workspace=@megbailey/ui
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

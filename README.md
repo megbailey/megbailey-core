@@ -62,7 +62,7 @@ Package-specific scripts (Storybook, etc.) live in [packages/ui/package.json](./
 
 ## Publishing
 
-Packages publish to **npm** and **GitHub Packages** when you push a version tag.
+Packages publish to **npm** (OIDC trusted publishing) and **GitHub Packages** Repositories.
 
 ### Release (CI)
 
