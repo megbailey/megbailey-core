@@ -1,18 +1,49 @@
 {
     "name": "@megbailey/utils",
     "version": "1.0.0",
-    "private": true,
+    "description": "Shared utility helpers for megbailey projects.",
+    "license": "MIT",
+    "author": "Megan Bailey",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/megbailey/megbailey-core.git",
+        "directory": "packages/utils"
+    },
+    "bugs": {
+        "url": "https://github.com/megbailey/megbailey-core/issues"
+    },
+    "homepage": "https://github.com/megbailey/megbailey-core/tree/main/packages/utils#readme",
+    "keywords": [
+        "utils",
+        "helpers",
+        "traversal"
+    ],
+    "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
             "default": "./dist/index.js"
-        }
+        },
+        "./package.json": "./package.json"
     },
-    "files": ["dist"],
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "tsc",
-        "prepare": "npm run build"
+        "clean": "rm -rf dist",
+        "prepare": "npm run build",
+        "prepublishOnly": "npm run build"
+    },
+    "engines": {
+        "node": ">=18"
     }
 }

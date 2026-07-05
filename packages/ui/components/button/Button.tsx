@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Icon from "../icon/Icon";
 
 import type { ButtonProps } from "./types";
+import "./Button.css";
 
 export type { ButtonIconProps, ButtonProps, ButtonSize, ButtonTheme } from "./types";
 

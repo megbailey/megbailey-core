@@ -5,9 +5,8 @@ import type { GroupBase, OptionsOrGroups } from "react-select";
 
 import InformedSelect from "../informed-select/InformedSelect";
 import type { InformedSelectOption } from "../informed-select/types";
-import { isCallableFunction } from "../types";
 
-import { resolveAmbiguousPath } from "@megbailey/utils";
+import { resolveAmbiguousPath, isCallableFunction } from "@megbailey/utils";
 
 import type {
     GraphQLSelectItem,

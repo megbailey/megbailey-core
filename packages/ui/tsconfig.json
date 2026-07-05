@@ -1,8 +1,17 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "types": ["vitest/globals"]
-  },
-  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "*.d.ts"]
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "types": ["vitest/globals"],
+        "module": "ESNext",
+        "moduleResolution": "bundler"
+    },
+    "include": [
+        "components/**/*",
+        "hooks/**/*",
+        "utils/**/*",
+        "index.ts",
+        "*.d.ts",
+    ],
+    "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.test.tsx", "**/*.stories.tsx"]
 }

@@ -1,0 +1,23 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "./dist",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "types": [],
+        "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true
+    },
+    "include": ["index.ts", "components/**/*.ts", "components/**/*.tsx", "hooks/**/*.ts", "hooks/**/*.tsx"],
+    "exclude": [
+        "dist",
+        "node_modules",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.stories.ts",
+        "**/*.stories.tsx",
+        "utils/test-utils.tsx"
+    ]
+}

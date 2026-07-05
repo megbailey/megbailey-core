@@ -15,6 +15,7 @@ import type {
     ValidationResult,
 } from "./types";
 import { getUploadErrorMessage } from "./types";
+import "./Dropzone.css";
 
 export type {
     DropItemProps,

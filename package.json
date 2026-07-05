@@ -5,6 +5,8 @@
         "packages/*"
     ],
     "scripts": {
+        "build": "npm run build --workspace=@megbailey/utils && npm run build --workspace=@megbailey/ui",
+        "clean": "npm run clean --workspace=@megbailey/utils && npm run clean --workspace=@megbailey/ui",
         "format": "prettier --write \"**/*.{ts,tsx}\"",
         "format:check": "prettier --check \"**/*.{ts,tsx}\"",
         "test": "npm run test --workspace=@megbailey/ui",
@@ -14,6 +16,7 @@
         "test:all": "npm run test:all --workspace=@megbailey/ui"
     },
     "devDependencies": {
+        "@types/node": "^26.1.0",
         "prettier": "^3.6.2"
     }
 }

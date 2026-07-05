@@ -2,6 +2,7 @@ import { useState, type MouseEvent } from "react";
 import clsx from "clsx";
 
 import type { ToggleSwitchProps } from "./types";
+import "./ToggleSwitch.css";
 
 export type { ToggleSwitchChangeEvent, ToggleSwitchProps } from "./types";
 
