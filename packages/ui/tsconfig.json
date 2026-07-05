@@ -4,5 +4,5 @@
     "outDir": "./dist",
     "types": ["vitest/globals"]
   },
-  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "*.d.ts", "test-setup.d.ts"]
+  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "*.d.ts"]
 }
