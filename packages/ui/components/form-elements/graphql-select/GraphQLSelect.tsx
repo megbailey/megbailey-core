@@ -55,7 +55,7 @@ const GraphQLSelect = <TItem extends GraphQLSelectItem = GraphQLSelectItem>({
     ...other
 }: GraphQLSelectProps<TItem>) => {
     const [APIData, setAPIData] = useState<TItem[]>([]);
-    const [getAPIData, { loading, error, data }] = useLazyQuery(query);
+    const [getAPIData, { loading, data }] = useLazyQuery(query);
 
     const renderLabel = (
         item: TItem | GroupBase<InformedSelectOption>,
@@ -143,10 +143,8 @@ const GraphQLSelect = <TItem extends GraphQLSelectItem = GraphQLSelectItem>({
         if (loading === false && data && Object.keys(data).length > 0) {
             const resolvedData = resolveAmbiguousPath(data, endpointDataPath) as TItem[];
             setAPIData(resolvedData);
-        } else if (error) {
-            console.error(`Unable to fetch GraphQL '${endpointDataPath}' data.`, error);
         }
-    }, [error, data, loading, endpointDataPath]);
+    }, [data, loading, endpointDataPath]);
 
     if (loading || !data) {
         return null;

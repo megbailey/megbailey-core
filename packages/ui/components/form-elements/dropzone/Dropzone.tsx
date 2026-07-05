@@ -453,7 +453,9 @@ const DropItem = (props: DropItemProps) => {
             .then((r) => {
                 setItemSize(`${(r.size / 1024).toFixed(1)}`);
             })
-            .catch((e) => console.log(e));
+            .catch(() => {
+                // Preview file size is optional; ignore fetch failures (e.g. abort on unmount).
+            });
 
         if (itemRef.current) {
             itemRef.current.onload = function () {

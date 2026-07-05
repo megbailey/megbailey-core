@@ -1,8 +1,6 @@
 # @megbailey/ui
 
-React component library with implemented [W3 design patterns](https://www.w3.org/WAI/ARIA/apg/patterns/), new form elements, GraphQL integrations, and hooks.
-
-**Source:** [github.com/megbailey/megbailey-core/tree/main/packages/ui](https://github.com/megbailey/megbailey-core/tree/main/packages/ui)
+React component library with [W3 design patterns](https://www.w3.org/WAI/ARIA/apg/patterns/), new form elements, GraphQL integrations, and hooks.
 
 ## Install
 
@@ -33,21 +31,18 @@ npm install @apollo/client
 
 ## Exports
 
-Each export is available from the package entry point:
+Each export is available from the package's entry point:
 
 ```tsx
 import { Button, ToggleSwitch, useOnClickOutside } from "@megbailey/ui";
 ```
 
-Some component CSS is bundled with the package, but it is not imported by the package by default.
-
 ---
 
 ### Button
 
-**Summary** — Themed button or anchor link with optional leading icon, active state, and four color themes (`primary`, `secondary`, `danger`, `success`).
-
-**Usage**
+Themed button or anchor link with optional leading icon, active state, and four color themes
+(`primary`, `secondary`, `danger`, `success`).
 
 ```tsx
 import { Button } from "@megbailey/ui";
@@ -60,8 +55,6 @@ import { Button } from "@megbailey/ui";
   Settings
 </Button>
 ```
-
-**Props**
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -83,23 +76,17 @@ import { Button } from "@megbailey/ui";
 
 Also accepts standard `HTMLAttributes` for `<button>` / `<a>`.
 
-**Types:** `ButtonProps`, `ButtonTheme`, `ButtonSize`, `ButtonIconProps`
-
 ---
 
 ### Icon
 
-**Summary** — SVG icon wrapper keyed by `name`, with size (`micro`–`jumbo`) and style (`solid`, `regular`) variants.
-
-**Usage**
+SVG icon wrapper keyed by `name`, with size (`micro`–`jumbo`) and style (`solid`, `regular`) variants.
 
 ```tsx
 import { Icon } from "@megbailey/ui";
 
 <Icon name="check-circle" size="normal" theme="solid" />
 ```
-
-**Props**
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -109,15 +96,11 @@ import { Icon } from "@megbailey/ui";
 | `color` | `string` | — | CSS color override |
 | `className` | `string` | — | Additional CSS class |
 
-**Types:** `IconProps`, `IconSize`, `IconTheme`
-
 ---
 
 ### Tooltip
 
-**Summary** — Accessible tooltip in wrapper or standalone icon mode, with four positions, light/dark themes, and optional arrow.
-
-**Usage**
+Accessible tooltip in wrapper or standalone icon mode, with four positions, light/dark themes, and optional arrow.
 
 ```tsx
 import { Tooltip } from "@megbailey/ui";
@@ -128,8 +111,6 @@ import { Tooltip } from "@megbailey/ui";
 
 <Tooltip type="icon" text="Help text" iconName="info-circle" />
 ```
-
-**Props**
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -143,15 +124,11 @@ import { Tooltip } from "@megbailey/ui";
 | `className` | `string` | — | Additional CSS class |
 | `children` | `ReactNode` | — | Wrapped trigger content |
 
-**Types:** `TooltipProps`, `TooltipPosition`, `TooltipTheme`, `TooltipType`
-
 ---
 
 ### Paragraph
 
-**Summary** — Lightweight typography wrapper for body text via `text` or `children`.
-
-**Usage**
+Lightweight typography wrapper for body text via `text` or `children`.
 
 ```tsx
 import { Paragraph } from "@megbailey/ui";
@@ -160,23 +137,17 @@ import { Paragraph } from "@megbailey/ui";
 <Paragraph className="text-muted">Custom styled paragraph.</Paragraph>
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `text` | `string` | — | Paragraph content |
 | `className` | `string` | — | Additional CSS class |
 | `children` | `ReactNode` | — | Alternative to `text` |
 
-**Types:** `ParagraphProps`
-
 ---
 
 ### DisclosureTree
 
-**Summary** — [Disclosure (Tree View)](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) tree with keyboard navigation, multi-expand or accordion behavior, and optional flat rendering.
-
-**Usage**
+[Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) tree with keyboard navigation, multi-expand or accordion behavior, and optional flat rendering.
 
 ```tsx
 import { DisclosureTree } from "@megbailey/ui";
@@ -196,8 +167,6 @@ import { DisclosureTree } from "@megbailey/ui";
 />
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | — | **Required.** Root tree ID |
@@ -209,8 +178,6 @@ import { DisclosureTree } from "@megbailey/ui";
 | `nested` | `boolean` | `true` | `false` renders flat list without expansion |
 | `onKeyEscape` | `(e: KeyboardEvent) => void` | — | Escape key handler |
 
-**`DisclosureTreeItemProps`**
-
 | Prop | Type | Description |
 | --- | --- | --- |
 | `id` | `string` | **Required.** Unique node ID |
@@ -219,15 +186,11 @@ import { DisclosureTree } from "@megbailey/ui";
 | `items` | `DisclosureTreeItemProps[]` | Child nodes |
 | `active` | `boolean` | Active/selected state |
 
-**Types:** `DisclosureTreeProps`, `DisclosureTreeItemProps`, `BranchProps`, `LeafProps`, `TreeNodeProps`
-
 ---
 
 ### ExpansionControls
 
-**Summary** — Single expand/collapse toggle (plus/minus icon) with `aria-expanded` and `aria-controls`, built on `Button`.
-
-**Usage**
+Single expand/collapse toggle (plus/minus icon) with `aria-expanded` and `aria-controls`, built on `Button`.
 
 ```tsx
 import { ExpansionControls } from "@megbailey/ui";
@@ -239,8 +202,6 @@ import { ExpansionControls } from "@megbailey/ui";
 />
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `controlsId` | `string` | — | **Required.** ID of controlled panel |
@@ -249,15 +210,11 @@ import { ExpansionControls } from "@megbailey/ui";
 | `active` | `boolean` | — | Active styling |
 | `onKeyDown` | `(e: KeyboardEvent) => void` | — | Keyboard handler |
 
-**Types:** `ExpansionControlsProps`
-
 ---
 
 ### ButtonSelect
 
-**Summary** — Segmented button group for single or multi-select from plain values or `{ label, value }` options.
-
-**Usage**
+Segmented button group for single or multi-select from plain values or `{ label, value }` options.
 
 ```tsx
 import { ButtonSelect } from "@megbailey/ui";
@@ -274,8 +231,6 @@ import { ButtonSelect } from "@megbailey/ui";
 />
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `label` | `string` | — | Field label |
@@ -290,15 +245,11 @@ import { ButtonSelect } from "@megbailey/ui";
 
 Also accepts standard `HTMLAttributes` for `<div>` (except `onChange`).
 
-**Types:** `ButtonSelectProps`, `ButtonSelectOption`, `ButtonSelectOptionValue`, `ButtonSelectTheme`
-
 ---
 
 ### Dropzone
 
-**Summary** — Informed drag-and-drop file upload with MIME/size validation, optional image dimension checks, preview thumbnails, and a pluggable upload promise. Default max file size is 2 MB (`DEFAULT_MAX_FILE_SIZE`).
-
-**Usage**
+Informed drag-and-drop file upload with MIME/size validation, optional image dimension checks, preview thumbnails, and a pluggable upload promise. Default max file size is 2 MB (`DEFAULT_MAX_FILE_SIZE`).
 
 ```tsx
 import { Form } from "informed";
@@ -317,8 +268,6 @@ import { Dropzone, DEFAULT_MAX_FILE_SIZE } from "@megbailey/ui";
   />
 </Form>
 ```
-
-**Props**
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -344,17 +293,11 @@ import { Dropzone, DEFAULT_MAX_FILE_SIZE } from "@megbailey/ui";
 
 Also accepts Informed `FieldProps` and standard input attributes (excluding `onDrop`, `accept`, `multiple`, `type`, `value`, `defaultValue`).
 
-**Types:** `DropzoneProps`, `DropzoneUserProps`, `DropItemProps`, `DropzoneAccept`, `DropzoneAspectRatio`, `UploadResult`, `ValidationResult`, `ImageDimensions`
-
-**Peer dependencies:** `informed`
-
 ---
 
 ### GraphQLSelect
 
-**Summary** — Apollo-powered async select for Informed forms; loads options via GraphQL query, supports grouping, multi-select, and request abort on unmount.
-
-**Usage**
+Apollo-powered async select for Informed forms; loads options via GraphQL query, supports grouping, multi-select, and request abort on unmount.
 
 ```tsx
 import { gql } from "graphql-tag";
@@ -376,8 +319,6 @@ const QUERY = gql`
 />;
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `field` | `string` | — | Informed field name |
@@ -396,17 +337,11 @@ const QUERY = gql`
 | `isDisabled` | `boolean` | — | Disable interaction |
 | `placeholder` | `string` | — | Placeholder text |
 
-**Types:** `GraphQLSelectProps`, `GraphQLSelectItem`, `GraphQLSelectChangeEvent`, `ParseJSONOptionValueEvent`
-
-**Peer dependencies:** `@apollo/client`, `react-select`, `informed`
-
 ---
 
 ### InformedSelect
 
-**Summary** — `react-select` dropdown as an Informed form field with typed change/blur handlers, grouping, and multi-select support.
-
-**Usage**
+`react-select` dropdown as an Informed form field with typed change/blur handlers, grouping, and multi-select support.
 
 ```tsx
 import { Form } from "informed";
@@ -426,8 +361,6 @@ import { InformedSelect } from "@megbailey/ui";
 </Form>
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `field` | `string` | — | Informed field name |
@@ -446,17 +379,11 @@ import { InformedSelect } from "@megbailey/ui";
 
 Also accepts additional [react-select props](https://react-select.com/props) (excluding `value`, `onChange`, `onBlur`, `options`, `isMulti`, `isDisabled`, `inputId`) and Informed `FieldProps`.
 
-**Types:** `InformedSelectProps`, `InformedSelectFieldProps`, `InformedSelectOption`, `InformedSelectFieldValue`
-
-**Peer dependencies:** `informed`, `react-select`
-
 ---
 
 ### ToggleSwitch
 
-**Summary** — Accessible on/off toggle with customizable on/off labels, helper text, and a click handler.
-
-**Usage**
+Accessible on/off toggle with customizable on/off labels, helper text, and a click handler.
 
 ```tsx
 import { ToggleSwitch } from "@megbailey/ui";
@@ -471,8 +398,6 @@ import { ToggleSwitch } from "@megbailey/ui";
 />
 ```
 
-**Props**
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `label` | `string` | — | Field label |
@@ -485,15 +410,11 @@ import { ToggleSwitch } from "@megbailey/ui";
 
 Also accepts standard `HTMLAttributes` for `<div>` (except `onClick`).
 
-**Types:** `ToggleSwitchProps`, `ToggleSwitchChangeEvent`
-
 ---
 
 ### useAbortController
 
-**Summary** — Provides a stable `AbortController` with lazy creation and automatic abort on unmount (used by `GraphQLSelect`).
-
-**Usage**
+Provides a stable `AbortController` with lazy creation and automatic abort on unmount (used by `GraphQLSelect`).
 
 ```tsx
 import { useAbortController } from "@megbailey/ui";
@@ -508,8 +429,6 @@ function MyComponent() {
 }
 ```
 
-**Returns**
-
 | Property | Type | Description |
 | --- | --- | --- |
 | `getController` | `() => AbortController` | Returns (or creates) the controller instance |
@@ -518,9 +437,7 @@ function MyComponent() {
 
 ### useDelay
 
-**Summary** — Debounce-style utility that runs a callback after a delay and returns a cleanup function for `useEffect`.
-
-**Usage**
+Debounce-style utility that runs a callback after a delay and returns a cleanup function for `useEffect`.
 
 ```tsx
 import { useEffect } from "react";
@@ -533,23 +450,17 @@ function SearchInput() {
 }
 ```
 
-**Parameters**
-
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | `callback` | `() => void` | `() => null` | Function to run after delay |
 | `delay` | `number` | `1000` | Delay in milliseconds |
 | `cleanUpCallback` | `() => void` | `() => null` | Called when timeout is cleared |
 
-**Returns:** `() => void` — cancel function for effect cleanup.
-
 ---
 
 ### useOnClickOutside
 
-**Summary** — Fires a callback on `document` mousedown when the click target is outside the referenced element.
-
-**Usage**
+Fires a callback on `document` mousedown when the click target is outside the referenced element.
 
 ```tsx
 import { useRef } from "react";
@@ -562,8 +473,6 @@ function Dropdown() {
 }
 ```
 
-**Parameters**
-
 | Param | Type | Description |
 | --- | --- | --- |
 | `ref` | `RefObject<HTMLElement \| null>` | Element boundary |
@@ -573,9 +482,7 @@ function Dropdown() {
 
 ### usePromises
 
-**Summary** — Tracks one or more in-flight promises so UI can reflect pending state (e.g. disable submit while uploads run).
-
-**Usage**
+Tracks one or more in-flight promises so UI can reflect pending state (e.g. disable submit while uploads run).
 
 ```tsx
 import { usePromises } from "@megbailey/ui";
@@ -590,8 +497,6 @@ function UploadForm() {
   return <button disabled={isPending()}>Submit</button>;
 }
 ```
-
-**Returns**
 
 | Property | Type | Description |
 | --- | --- | --- |

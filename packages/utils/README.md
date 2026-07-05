@@ -1,10 +1,15 @@
 # @megbailey/utils
 
-Framework-agnostic helpers.
-
-**Source:** [github.com/megbailey/megbailey-core/tree/main/packages/utils](https://github.com/megbailey/megbailey-core/tree/main/packages/utils)
+Framework-agnostic helpers. Source: [github.com/megbailey/megbailey-core/tree/main/packages/utils](https://github.com/megbailey/megbailey-core/tree/main/packages/utils)
 
 Used by [`@megbailey/ui`](https://github.com/megbailey/megbailey-core/tree/main/packages/ui) and published separately for reuse in other projects.
+
+## Core Concepts
+
+- Dot-notation paths — address deeply nested fields without manual traversal
+- In-place mutation — consistent with form/state update patterns
+- Array helpers — append, update by index, and remove by ID
+- Zero dependencies — small surface area, easy to tree-shake
 
 ## Install
 
@@ -16,7 +21,7 @@ No peer dependencies. Works in Node.js (≥ 18) and browsers.
 
 ## Usage
 
-All helpers mutate the original object in place and return it for chaining.
+Helpers mutate the original object in place and return it for chaining.
 
 ```ts
 import {
@@ -61,16 +66,9 @@ Paths use dot notation (e.g. `"user.profile.name"`). Missing paths throw a descr
 | `addToObjectArray(object, fieldName, value)` | Append a value to the array at a dot-notation path |
 | `setObjectArrayField(object, groupFieldName, index, fieldName, value)` | Set a property on an array element at `index` |
 | `removeFromObjectArrayByID(object, fieldName, IDFieldName, IDValue)` | Remove the first array element whose `IDFieldName` matches `IDValue` |
+| `isCallableFunction(func, label?)` | Type guard that returns `true` when `func` is a callable function |
 
 All functions accept `any` for object values and return the mutated root object (except `resolveAmbiguousPath`, which returns the resolved value).
-
-## Features
-
-- **Dot-notation paths** — address deeply nested fields without manual traversal
-- **In-place mutation** — consistent with form/state update patterns
-- **Array helpers** — append, update by index, and remove by ID
-- **ESM-only** — `"type": "module"` with TypeScript declarations in `dist/`
-- **Zero dependencies** — small surface area, easy to tree-shake
 
 ## Development
 
