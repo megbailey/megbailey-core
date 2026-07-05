@@ -1,6 +1,6 @@
 {
     "name": "@megbailey/ui",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "React component library with W3 design patterns, new form elements, GraphQL integrations, and hooks.",
     "license": "MIT",
     "author": "Megan Bailey",
@@ -40,7 +40,8 @@
         "LICENSE"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     },
     "scripts": {
         "build": "vite build && tsc -p tsconfig.lib.json",
@@ -56,7 +57,7 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
-        "@megbailey/utils": "^1.0.0",
+        "@megbailey/utils": "^1.0.1",
         "clsx": "^2.1.1",
         "dompurify": "^3.2.4",
         "graphql-tag": "^2.12.6",

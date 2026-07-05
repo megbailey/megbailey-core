@@ -1,6 +1,6 @@
 {
     "name": "@megbailey/utils",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Shared utility helpers for megbailey projects.",
     "license": "MIT",
     "author": "Megan Bailey",
@@ -35,7 +35,8 @@
         "LICENSE"
     ],
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
     },
     "scripts": {
         "build": "tsc",

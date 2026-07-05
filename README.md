@@ -62,11 +62,16 @@ Package-specific scripts (Storybook, etc.) live in [packages/ui/package.json](./
 
 ## Publishing
 
-Each package builds to `dist/` and publishes independently to npm under the `@megbailey` scope. From a package directory:
+Packages publish to **npm** and **GitHub Packages** when you push a version tag.
+
+### Release (CI)
+
+1. Bump `version` in `packages/utils/package.json` and `packages/ui/package.json`
+2. Commit, tag, and push:
 
 ```bash
-cd packages/utils && npm publish
-cd packages/ui && npm publish
+git tag v1.0.1
+git push origin main --tags
 ```
 
 ## License
