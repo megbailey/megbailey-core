@@ -3,5 +3,5 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
-  "include": ["components/**/*", "hooks/**/*"]
+  "include": ["components/**/*", "hooks/**/*", "components/__tests__", "*.d.ts"]
 }

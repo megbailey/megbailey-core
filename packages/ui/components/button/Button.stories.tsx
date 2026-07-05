@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import Button, { type ButtonSize, type ButtonTheme } from "./Button";
+import "./Button.css";
 
 const meta = {
     title: "Components/Button",
@@ -22,7 +23,6 @@ const meta = {
             options: ["inline", "block"],
         },
         active: { control: "boolean" },
-        inverse: { control: "boolean" },
         text: { control: "text" },
         href: { control: "text" },
         target: {
@@ -36,8 +36,7 @@ const meta = {
         size: "medium",
         layout: "inline",
         active: false,
-        inverse: false,
-        onClick: fn(),
+        onClick: fn(() => console.log('button clicked!')),
     },
 } satisfies Meta<typeof Button>;
 
@@ -80,11 +79,10 @@ export const ActiveState: Story = {
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
                 <Button
                     {...args}
-                    inverse
                     active={false}
                     text={`${args.text} (default)`}
                 />
-                <Button {...args} inverse active text={`${args.text} (active)`} />
+                <Button {...args} active text={`${args.text} (active)`} />
             </div>
         </div>
     ),

@@ -21,7 +21,6 @@ const meta = {
             options: ["regular", "solid"],
         },
         color: { control: "color" },
-        inverse: { control: "boolean" },
     },
     args: {
         name: "info-circle",

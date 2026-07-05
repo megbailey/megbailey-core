@@ -1,14 +1,9 @@
 import React from "react";
 import clsx from "clsx";
 
-export interface IconProps {
-    name: string;
-    size?: "micro" | "small" | "normal" | "large" | "jumbo" | string;
-    theme?: "solid" | "regular" | string;
-    color?: string;
-    inverse?: boolean;
-    className?: string;
-}
+import type { IconProps } from "./types";
+
+export type { IconProps, IconSize, IconTheme } from "./types";
 
 const iconPaths: Record<string, React.ReactNode> = {
     "minus-circle": (
@@ -87,7 +82,6 @@ const Icon = ({
     size = "normal",
     theme = "regular",
     color,
-    inverse,
     className,
 }: IconProps) => {
     const svg = iconPaths[name];
@@ -111,7 +105,7 @@ const Icon = ({
         width: dimension,
         height: dimension,
         display: "inline-block",
-        color: color || (inverse ? "#ffffff" : "currentColor"),
+        color: color,
         verticalAlign: "middle",
     };
 

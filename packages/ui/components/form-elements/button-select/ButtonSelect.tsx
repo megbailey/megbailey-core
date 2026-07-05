@@ -1,26 +1,15 @@
-import { useState, type HTMLAttributes } from "react";
+import { useState } from "react";
 import uniqid from "uniqid";
 
 import Button from "../../button/Button";
+import type { ButtonSelectOption, ButtonSelectOptionValue, ButtonSelectProps } from "./types";
 
-export type ButtonSelectOptionValue = string | number | boolean;
-
-export type ButtonSelectOption =
-    ButtonSelectOptionValue | { label: string; value: ButtonSelectOptionValue };
-
-export type ButtonSelectTheme = "primary" | "secondary" | "danger" | "success";
-
-export type ButtonSelectProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
-    label?: string;
-    options?: ButtonSelectOption[];
-    theme?: ButtonSelectTheme | string;
-    initialValue?: ButtonSelectOptionValue | ButtonSelectOptionValue[] | null;
-    tooltip?: boolean;
-    onChange?: (value: ButtonSelectOptionValue | ButtonSelectOptionValue[] | null) => void;
-    isDisabled?: boolean;
-    isMulti?: boolean;
-    capitalizeOptions?: boolean;
-};
+export type {
+    ButtonSelectOption,
+    ButtonSelectOptionValue,
+    ButtonSelectProps,
+    ButtonSelectTheme,
+} from "./types";
 
 function getOptionParts(item: ButtonSelectOption): {
     label: string;
@@ -45,7 +34,6 @@ const ButtonSelect = ({
     options = [],
     theme = "primary",
     initialValue,
-    tooltip: _tooltip,
     onChange,
     isDisabled = false,
     isMulti = false,
@@ -76,7 +64,6 @@ const ButtonSelect = ({
                                 size={"small"}
                                 layout={"inline"}
                                 active={selectedOptions.includes(itemValue)}
-                                inverse={true}
                                 text={itemLabel}
                                 onClick={() => {
                                     if (isDisabled) return null;

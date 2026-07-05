@@ -1,7 +1,11 @@
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import Icon from "../icon/Icon";
+
+import type { TooltipProps } from "./types";
+
+export type { TooltipPosition, TooltipProps, TooltipTheme, TooltipType } from "./types";
 
 const tooltipClass = "c-tooltip";
 
@@ -21,18 +25,6 @@ export const defaultProps = {
     theme: "dark",
     arrow: true,
     showTip: false,
-};
-
-export type TooltipProps = {
-    className?: string;
-    text: string;
-    children?: ReactNode;
-    type?: "icon" | "wrapper" | string;
-    iconName?: string;
-    position?: "top" | "bottom" | "left" | "right" | string;
-    theme?: "dark" | "light" | string;
-    arrow?: boolean;
-    showTip?: boolean;
 };
 
 const Tooltip = ({

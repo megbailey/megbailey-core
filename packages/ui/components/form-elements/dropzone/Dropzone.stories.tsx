@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Form } from "informed";
 import { fn } from "storybook/test";
-import Dropzone from "./Dropzone";
-import type { UploadResult } from "../types";
+import Dropzone, { DEFAULT_MAX_FILE_SIZE } from "./Dropzone";
+import type { UploadResult } from "./types";
+import "./Dropzone.css";
+
+const TWO_MB = DEFAULT_MAX_FILE_SIZE;
 
 const mockUploadFilePromise = (file: File): Promise<UploadResult> => {
     return new Promise((resolve) => {
@@ -33,6 +36,7 @@ const meta = {
         },
         isMulti: { control: "boolean" },
         isRequired: { control: "boolean" },
+        maxFileSize: { control: "number" },
         aspectRatio: {
             control: "select",
             options: ["1:1", "3:2", "4:3", "4:5", "9:16", "16:9"],
@@ -41,14 +45,15 @@ const meta = {
     args: {
         field: "fileUpload",
         label: "Upload Documents or Images",
-        helperText: "Max file size is 2MB. Supports images/documents.",
+        helperText: "Configurable file size limit. Support images or documents.",
         accept: "image",
         isMulti: false,
         isRequired: false,
-        uploadsURL: "https://example.com/uploads",
+        maxFileSize: TWO_MB,
+        uploadsURL: "https://mebailey.me/uploads",
         uploadFilePromise: mockUploadFilePromise,
-        onDrop: fn(),
-        onItemRemove: fn(),
+        onDrop: fn(() => console.log("File dropped")),
+        onItemRemove: fn(() => console.log("File removed")),
     },
 } satisfies Meta<typeof Dropzone>;
 

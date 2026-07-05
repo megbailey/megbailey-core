@@ -45,9 +45,3 @@ export const MultiSelect: Story = {
         isMulti: true,
     },
 };
-
-export const Disabled: Story = {
-    args: {
-        isDisabled: true,
-    },
-};

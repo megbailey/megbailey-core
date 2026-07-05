@@ -22,52 +22,31 @@ const mockItems: DisclosureTreeItemProps[] = [
     {
         id: "2",
         parent_id: null,
-        //children: [],
         item: <p>Item 2</p>,
     },
     {
         id: "3",
         parent_id: null,
-        //children: [],
         item: <p>Item 3</p>,
+        items: [
+            {
+                id: "32",
+                parent_id: "3",
+                item: <p>Item 3a</p>,
+            },
+            {
+                id: "33",
+                parent_id: "3",
+                item: <p>Item 3b</p>,
+            },
+        ],
     },
     {
         id: "4",
         parent_id: null,
-        //children: [],
         item: <p>Item 4</p>,
     },
 ];
-
-/* const renderItem = (item: any, isBranch: boolean, expanded: boolean) => {
-  return (
-        <div 
-            style={{ 
-                padding: '6px 12px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between', 
-                width: '100%', 
-                background: '#fafafa', 
-                border: '1px solid #f0f0f0', 
-                borderRadius: '6px',
-                fontSize: '14px',
-                color: item.item.active ? '#1890ff' : 'rgba(0,0,0,0.85)',
-                fontWeight: item.item.active ? 'bold' : 'normal',
-                cursor: 'pointer'
-            }}
-        >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>{item.item.text}</span>
-            </div>
-            {isBranch && (
-                <span style={{ fontSize: '10px', padding: '2px 6px', background: expanded ? '#e6f7ff' : '#f5f5f5', color: expanded ? '#1890ff' : '#999', borderRadius: '10px' }}>
-                    {expanded ? 'Expanded' : 'Collapsed'}
-                </span>
-            )}
-        </div>
-    );
-}; */
 
 const meta = {
     title: "Components/DisclosureTree",

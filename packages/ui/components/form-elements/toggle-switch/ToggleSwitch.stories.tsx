@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import ToggleSwitch from "./ToggleSwitch";
+import "./ToggleSwitch.css";
 
 const meta = {
     title: "Components/Form Elements/ToggleSwitch",
@@ -19,7 +20,6 @@ const meta = {
         label: { control: "text" },
         helperText: { control: "text" },
         initialValue: { control: "boolean" },
-        tooltip: { control: "boolean" },
         onLabel: { control: "text" },
         offLabel: { control: "text" },
     },
@@ -27,10 +27,9 @@ const meta = {
         label: "Enable Notifications",
         helperText: "Send me sound notifications for updates",
         initialValue: false,
-        tooltip: true,
         onLabel: "On",
         offLabel: "Off",
-        onClick: fn(),
+        onClick: fn((e) => console.log("Toggle switch changed", e)),
     },
 } satisfies Meta<typeof ToggleSwitch>;
 
@@ -41,7 +40,6 @@ export const Default: Story = {};
 
 export const WithoutTooltip: Story = {
     args: {
-        tooltip: false,
         helperText: "Helper text shown below the switch without an info icon.",
     },
 };

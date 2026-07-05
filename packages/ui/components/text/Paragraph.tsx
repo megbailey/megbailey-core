@@ -1,10 +1,6 @@
-import { ReactNode } from "react";
+import type { ParagraphProps } from "./types";
 
-type ParagraphProps = {
-    text?: string;
-    children?: ReactNode;
-    className?: string;
-};
+export type { ParagraphProps } from "./types";
 
 const Paragraph = ({ text, children, className }: ParagraphProps) => {
     return <p className={className}>{text || children}</p>;

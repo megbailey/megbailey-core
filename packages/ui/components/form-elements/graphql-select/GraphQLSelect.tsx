@@ -1,45 +1,28 @@
 import { useEffect, useState } from "react";
-import { useLazyQuery, type DocumentNode } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import type { GroupBase, OnChangeValue, OptionsOrGroups } from "react-select";
+import type { GroupBase, OptionsOrGroups } from "react-select";
 
-import InformedSelect, { type InformedSelectOption } from "../informed-select/InformedSelect";
-import type { FormFieldChangeEvent } from "../types";
+import InformedSelect from "../informed-select/InformedSelect";
+import type { InformedSelectOption } from "../informed-select/types";
 import { isCallableFunction } from "../types";
 
 import { resolveAmbiguousPath } from "@megbailey/utils";
 
-type GraphQLSelectChangeEvent<TItem> = FormFieldChangeEvent<TItem | TItem[]>;
+import type {
+    GraphQLSelectItem,
+    GraphQLSelectProps,
+    ParseJSONOptionValueEvent,
+} from "./types";
 
-export type GraphQLSelectItem = Record<string, unknown> & {
-    label?: string;
-    name?: string;
-    title?: string;
-};
+export type {
+    GraphQLSelectChangeEvent,
+    GraphQLSelectItem,
+    GraphQLSelectProps,
+    ParseJSONOptionValueEvent,
+} from "./types";
 
-export type GraphQLSelectProps<TItem extends GraphQLSelectItem = GraphQLSelectItem> = {
-    label?: string;
-    field?: string;
-    initialValue?: TItem | TItem[];
-    endpointDataPath?: string;
-    query?: DocumentNode;
-    queryVariables?: Record<string, unknown>;
-    attachAbortController?: boolean;
-    formatOptionLabel?: (item: TItem) => string;
-    formatGroupLabel?: (group: GroupBase<InformedSelectOption>) => string;
-    groupOptionsCallback?: (
-        options: InformedSelectOption[]
-    ) => OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>>;
-    onLoadingChange?: (loading: boolean) => void;
-    onChange?: (event: GraphQLSelectChangeEvent<TItem>) => void;
-    isMulti?: boolean;
-    isDisabled?: boolean;
-    placeholder?: string;
-};
-
-export const parseJSONOptionValue = (
-    event: FormFieldChangeEvent<OnChangeValue<InformedSelectOption, boolean>>
-): unknown => {
+export const parseJSONOptionValue = (event: ParseJSONOptionValueEvent): unknown => {
     if (Array.isArray(event.value)) {
         return event.value.map((item) => JSON.parse(item.value));
     }

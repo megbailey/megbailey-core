@@ -57,7 +57,7 @@ const meta = {
         endpointDataPath: "items",
         query: GET_ITEMS,
         queryVariables: {},
-        onChange: fn(),
+        onChange: fn((e) => console.log("Selected value changed", e)),
     },
 } satisfies Meta<typeof GraphQLSelect>;
 

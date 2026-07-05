@@ -12,46 +12,22 @@ import clsx from "clsx";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
 import ExpansionControls from "./ExpansionControls";
 
-export type DisclosureTreeItemProps = {
-    id: string;
-    parent_id: string | null;
-    active?: boolean;
-    item: React.ReactNode;
-    items?: DisclosureTreeItemProps[];
-};
+import type {
+    BranchProps,
+    DisclosureTreeItemProps,
+    DisclosureTreeProps,
+    LeafProps,
+    TreeNodeProps,
+} from "./types";
 
-export type DisclosureTreeProps = {
-    id: string;
-    items: DisclosureTreeItemProps[];
-    allowMultipleExpanded?: boolean;
-    preExpandedIds?: string[];
-    collapseOnLoad?: boolean;
-    collapseOnBlur?: boolean;
-    /* When true (default), items with children are rendered as expandable branches.
-     * When false, all items are rendered flat without expansion controls. */
-    nested?: boolean;
-    onKeyEscape?: (e: React.KeyboardEvent<any>) => void;
-};
-
-type BranchProps = {
-    treeKey: string;
-    level: number;
-    parent_id?: string | null;
-    item: DisclosureTreeItemProps;
-    onKeyEscape?: (e: React.KeyboardEvent<any>) => void;
-    allowMultipleExpanded?: boolean;
-};
-
-type LeafProps = {
-    className?: string;
-    id: string;
-    active?: boolean;
-    level: number;
-    onKeyDown?: (e: React.KeyboardEvent<any>) => void;
-    isBranch?: boolean;
-    item?: DisclosureTreeItemProps;
-    [key: string]: any;
-};
+export type {
+    BranchProps,
+    DisclosureTreeItemProps,
+    DisclosureTreeProps,
+    ExpansionControlsProps,
+    LeafProps,
+    TreeNodeProps,
+} from "./types";
 
 const DisclosureTreeContext = createContext<any>(null);
 
@@ -151,15 +127,7 @@ const TreeNode = ({
     onKeyEscape,
     allowMultipleExpanded,
     item,
-}: {
-    level: number;
-    treeKey: string;
-    parent_id?: string | null;
-    nested?: boolean;
-    onKeyEscape?: (e: React.KeyboardEvent<any>) => void;
-    allowMultipleExpanded?: boolean;
-    item: DisclosureTreeItemProps;
-}) => {
+}: TreeNodeProps) => {
     if (nested === true && (item?.items?.length ?? 0) > 0) {
         return (
             <li className={clsx(dTreeItemClassName, dTreeBranchClassName)}>
@@ -303,61 +271,66 @@ const Branch = ({
     );
 };
 
-const Leaf = forwardRef<any, LeafProps>(
-    ({ className = null, id, level, onKeyDown, isBranch = false, item }, ref) => {
-        const { nodeRefs, expandedIds } = useContext(DisclosureTreeContext);
+const Leaf = forwardRef<any, LeafProps>(({ 
+    className = null,
+    id,
+    level,
+    onKeyDown,
+    isBranch = false,
+    item
+}, ref) => {
+    const { nodeRefs, expandedIds } = useContext(DisclosureTreeContext);
 
-        const onKeyArrowUpDown = (e: React.KeyboardEvent<any>) => {
-            switch (e.key) {
-                case "ArrowUp":
-                    const prevItems = Object.keys(nodeRefs.current).filter(
-                        (x) => x < id && nodeRefs.current[x] !== null
-                    );
-                    const prev = prevItems[prevItems.length - 1];
-                    if (prev) {
-                        nodeRefs.current[prev].focus();
-                    }
-                    break;
-                case "ArrowDown":
-                    const nextItems = Object.keys(nodeRefs.current).filter(
-                        (x) => x > id && nodeRefs.current[x] !== null
-                    );
-                    const next = nextItems[0];
-                    if (next) {
-                        nodeRefs.current[next].focus();
-                    }
-                    break;
-            }
-        };
+    const onKeyArrowUpDown = (e: React.KeyboardEvent<any>) => {
+        switch (e.key) {
+            case "ArrowUp":
+                const prevItems = Object.keys(nodeRefs.current).filter(
+                    (x) => x < id && nodeRefs.current[x] !== null
+                );
+                const prev = prevItems[prevItems.length - 1];
+                if (prev) {
+                    nodeRefs.current[prev].focus();
+                }
+                break;
+            case "ArrowDown":
+                const nextItems = Object.keys(nodeRefs.current).filter(
+                    (x) => x > id && nodeRefs.current[x] !== null
+                );
+                const next = nextItems[0];
+                if (next) {
+                    nodeRefs.current[next].focus();
+                }
+                break;
+        }
+    };
 
-        //('Leaf render', id, level, isBranch, item)
-        const isExpanded = expandedIds.includes(id);
-        return (
-            <div
-                className={clsx(dTreeLeafClassName, className)}
-                ref={(el: any) => {
-                    nodeRefs.current[id] = el;
-                    if (ref) {
-                        if (typeof ref === "function") {
-                            ref(el);
-                        } else {
-                            (ref as any).current = el;
-                        }
+    //('Leaf render', id, level, isBranch, item)
+    const isExpanded = expandedIds.includes(id);
+    return (
+        <div
+            className={clsx(dTreeLeafClassName, className)}
+            ref={(el: any) => {
+                nodeRefs.current[id] = el;
+                if (ref) {
+                    if (typeof ref === "function") {
+                        ref(el);
+                    } else {
+                        (ref as any).current = el;
                     }
-                }}
-                onKeyDown={(e: React.KeyboardEvent<any>) => {
-                    if (onKeyDown) {
-                        onKeyDown(e);
-                    }
-                    onKeyArrowUpDown(e);
-                }}
-                tabIndex={0}
-            >
-                {item.item}
-            </div>
-        );
-    }
-);
+                }
+            }}
+            onKeyDown={(e: React.KeyboardEvent<any>) => {
+                if (onKeyDown) {
+                    onKeyDown(e);
+                }
+                onKeyArrowUpDown(e);
+            }}
+            tabIndex={0}
+        >
+            {item.item}
+        </div>
+    );
+});
 
 function remove(array: any[], value: any) {
     const index = array.indexOf(value);

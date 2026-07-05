@@ -1,55 +1,22 @@
 import React from "react";
 import { useField, type FieldProps } from "informed";
-import ReactSelect, {
-    type GroupBase,
-    type OnChangeValue,
-    type OptionsOrGroups,
-    type Props as ReactSelectProps,
-    type SelectInstance,
-} from "react-select";
+import ReactSelect, { type GroupBase, type SelectInstance } from "react-select";
 import clsx from "clsx";
 import uniqid from "uniqid";
 
-import type { FormFieldBlurHandler, FormFieldChangeHandler } from "../types";
+import type {
+    InformedSelectFieldProps,
+    InformedSelectFieldValue,
+    InformedSelectOption,
+    InformedSelectProps,
+} from "./types";
 
-export type InformedSelectOption = {
-    label: string;
-    value: string;
-};
-
-type InformedSelectFieldProps = {
-    field?: string;
-    label?: string;
-    helperText?: string;
-    tooltip?: boolean;
-    forwardedRef?: React.Ref<
-        SelectInstance<InformedSelectOption, boolean, GroupBase<InformedSelectOption>>
-    >;
-    options: OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>>;
-    placeholder?: string;
-    isMulti?: boolean;
-    isDisabled?: boolean;
-    initialValue?:
-        | OnChangeValue<InformedSelectOption, boolean>
-        | OptionsOrGroups<InformedSelectOption, GroupBase<InformedSelectOption>>;
-    formatGroupLabel?: (group: GroupBase<InformedSelectOption>) => React.ReactNode;
-};
-
-export type InformedSelectProps = Omit<
-    FieldProps<InformedSelectFieldProps>,
-    "name" | "onChange" | "onBlur"
-> &
-    InformedSelectFieldProps &
-    Omit<
-        ReactSelectProps<InformedSelectOption, boolean, GroupBase<InformedSelectOption>>,
-        "value" | "onChange" | "onBlur" | "options" | "isMulti" | "isDisabled" | "inputId"
-    > & {
-        name?: string;
-        onChange?: FormFieldChangeHandler<OnChangeValue<InformedSelectOption, boolean>>;
-        onBlur?: FormFieldBlurHandler<OnChangeValue<InformedSelectOption, boolean>>;
-    };
-
-type InformedSelectFieldValue = OnChangeValue<InformedSelectOption, boolean>;
+export type {
+    InformedSelectFieldProps,
+    InformedSelectFieldValue,
+    InformedSelectOption,
+    InformedSelectProps,
+} from "./types";
 
 const InformedSelect = (props: InformedSelectProps) => {
     const isMulti = props.isMulti === true;
@@ -69,7 +36,6 @@ const InformedSelect = (props: InformedSelectProps) => {
         className,
         label,
         helperText: _helperText,
-        tooltip: _tooltip,
         onBlur,
         field: _field,
         name: _name,

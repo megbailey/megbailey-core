@@ -1,22 +1,12 @@
-import { useState, type HTMLAttributes, type MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import clsx from "clsx";
-import Tooltip from "../../tooltip/Tooltip";
 
-import type { ToggleSwitchChangeEvent } from "../types";
-import "./ToggleSwitch.css";
+import type { ToggleSwitchProps } from "./types";
+
+export type { ToggleSwitchChangeEvent, ToggleSwitchProps } from "./types";
 
 export const propValues = {
     initialValue: [true, false],
-};
-
-export type ToggleSwitchProps = Omit<HTMLAttributes<HTMLDivElement>, "onClick"> & {
-    label?: string;
-    helperText?: string;
-    initialValue?: boolean;
-    tooltip?: boolean;
-    onLabel?: string;
-    offLabel?: string;
-    onClick?: (event: ToggleSwitchChangeEvent) => void;
 };
 
 const ToggleSwitch = (props: ToggleSwitchProps) => {
@@ -24,7 +14,6 @@ const ToggleSwitch = (props: ToggleSwitchProps) => {
         label,
         helperText,
         initialValue = false,
-        tooltip = false,
         onLabel = "On",
         offLabel = "Off",
         onClick,
@@ -67,8 +56,7 @@ const ToggleSwitch = (props: ToggleSwitchProps) => {
 
             {helperText && (
                 <div className="toggle-switch__helper">
-                    {tooltip && <Tooltip position="top" text={helperText} />}
-                    {!tooltip && <span className="toggle-switch__helper-text">{helperText}</span>}
+                    <span className="toggle-switch__helper-text">{helperText}</span>
                 </div>
             )}
         </div>

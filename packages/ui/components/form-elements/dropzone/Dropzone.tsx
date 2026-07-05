@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, type InputHTMLAttributes } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import clsx from "clsx";
 import { useField, type FieldProps } from "informed";
 import uniqid from "uniqid";
@@ -6,10 +6,28 @@ import dompurify from "dompurify";
 
 import Icon from "../../icon/Icon";
 import Button from "../../button/Button";
-import Paragraph from "../../text/Paragraph";
-import Tooltip from "../../tooltip/Tooltip";
-import type { ImageDimensions, UploadResult, ValidationResult } from "../types";
-import { getUploadErrorMessage } from "../types";
+import type {
+    DropItemProps,
+    DropzoneProps,
+    DropzoneUserProps,
+    ImageDimensions,
+    UploadResult,
+    ValidationResult,
+} from "./types";
+import { getUploadErrorMessage } from "./types";
+
+export type {
+    DropItemProps,
+    DropzoneAccept,
+    DropzoneAspectRatio,
+    DropzoneProps,
+    DropzoneUserProps,
+    ImageDimensions,
+    UploadResult,
+    ValidationResult,
+} from "./types";
+
+export const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export const propValues = {
     accept: ["image", "document"],
@@ -17,68 +35,21 @@ export const propValues = {
     aspectRatio: ["1:1", "3:2", "4:3", "4:5", "9:16", "16:9"],
 };
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-
-export type DropzoneAccept = "image" | "document";
-export type DropzoneAspectRatio = "1:1" | "3:2" | "4:3" | "4:5" | "9:16" | "16:9";
-
-type DropzoneUserProps = {
-    field: string;
-    className?: string;
-    label?: string;
-    helperText?: string;
-    accept?: DropzoneAccept | string;
-    isMulti?: boolean;
-    isRequired?: boolean;
-    tooltip?: boolean;
-    initialValue?: string[];
-    aspectRatio?: DropzoneAspectRatio | string;
-    imageMinimumWidth?: number;
-    imageMinimumHeight?: number;
-    imageMaximumWidth?: number;
-    imageMaximumHeight?: number;
-    onDrop?: (result: UploadResult) => void;
-    uploadFilePromise: (file: File) => Promise<UploadResult>;
-    uploadsURL: string;
-    onItemRemove?: (index: number) => void;
-};
-
-export type DropzoneProps = DropzoneUserProps &
-    Omit<FieldProps<DropzoneUserProps>, "name"> &
-    Omit<
-        InputHTMLAttributes<HTMLInputElement>,
-        "onDrop" | "accept" | "multiple" | "type" | "value" | "defaultValue"
-    >;
+function formatFileSize(bytes: number): string {
+    if (bytes >= 1024 * 1024) {
+        return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+    }
+    if (bytes >= 1024) {
+        return `${(bytes / 1024).toFixed(1)}KB`;
+    }
+    return `${bytes}B`;
+}
 
 const BarLoader = ({ loading }: { loading: boolean }) => {
     if (!loading) return null;
     return (
-        <div
-            style={{
-                width: "100%",
-                height: "4px",
-                backgroundColor: "#e6f7ff",
-                overflow: "hidden",
-                position: "relative",
-                margin: "8px 0",
-            }}
-        >
-            <div
-                style={{
-                    width: "30%",
-                    height: "100%",
-                    backgroundColor: "#1890ff",
-                    position: "absolute",
-                    animation: "loading-bar 1.5s infinite ease-in-out",
-                }}
-            />
-            <style>{`
-                @keyframes loading-bar {
-                    0% { left: -30%; }
-                    50% { left: 100%; }
-                    100% { left: 100%; }
-                }
-            `}</style>
+        <div className="dropzone__loader">
+            <div className="dropzone__loader-bar" />
         </div>
     );
 };
@@ -96,13 +67,13 @@ const Dropzone = (props: DropzoneProps) => {
         accept = "image",
         isMulti = false,
         isRequired = false,
-        tooltip = false,
         initialValue = [],
         aspectRatio,
         imageMinimumWidth,
         imageMinimumHeight,
         imageMaximumWidth,
         imageMaximumHeight,
+        maxFileSize = DEFAULT_MAX_FILE_SIZE,
         onDrop: callback,
         uploadFilePromise,
         uploadsURL,
@@ -178,9 +149,6 @@ const Dropzone = (props: DropzoneProps) => {
 
     // Validation occurs BEFORE file is uploaded to the server
     async function validateFile(file: File): Promise<ValidationResult> {
-        console.log(file);
-
-        // File not provided
         if (!file) {
             return { valid: false, error: "No file selected." };
         }
@@ -230,11 +198,12 @@ const Dropzone = (props: DropzoneProps) => {
     }
 
     function validateFileSize(file: File): ValidationResult {
-        if (file.size > MAX_FILE_SIZE) {
-            const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        if (file.size > maxFileSize) {
+            const sizeLabel = formatFileSize(file.size);
+            const limitLabel = formatFileSize(maxFileSize);
             return {
                 valid: false,
-                error: `${accept} is too large for upload! File size is ${sizeMB}MB.\nFile size limit is 2MB.`,
+                error: `${accept} is too large for upload! File size is ${sizeLabel}.\nFile size limit is ${limitLabel}.`,
             };
         }
         return { valid: true };
@@ -365,22 +334,22 @@ const Dropzone = (props: DropzoneProps) => {
     const valueArray = Array.isArray(fieldState.value) ? fieldState.value : [];
 
     return render(
-        <div className={clsx("form-element", className)}>
+        <div className={clsx("dropzone-field", "form-element", className)}>
             {label && (
                 <label
-                    className={clsx("form-element__label", className, {
-                        ["form__label--required"]: isRequired === true,
+                    className={clsx("dropzone-field__label", "form-element__label", {
+                        "dropzone-field__label--required": isRequired === true,
                     })}
                     htmlFor={dropzoneID}
                 >
                     {label}
-                    {tooltip && helperText && <Tooltip position="right" text={helperText} />}
                 </label>
             )}
             {((!isMulti && valueArray.length <= 0) || isMulti) && (
                 <div
                     className={clsx("dropzone", {
-                        [`dropzone__error`]: fieldState.error,
+                        "dropzone--drag-over": dragOver,
+                        "dropzone--error": fieldState.error || fileDropError,
                     })}
                     onDragOver={onDragOver}
                     onDragLeave={onDragLeave}
@@ -401,25 +370,35 @@ const Dropzone = (props: DropzoneProps) => {
                         multiple={isMulti}
                     />
                     {isLoading && <BarLoader loading={isLoading} />}
-                    {dragOver ? (
-                        <Paragraph>
-                            {`Release to Upload`} <br /> or
-                        </Paragraph>
-                    ) : (
-                        <Paragraph>
-                            {`Drag ${accept}${isMulti ? "s" : ""} to Upload`} <br /> or
-                        </Paragraph>
-                    )}
-                    <Button
-                        text={"Browse Files"}
-                        onClick={() => {
-                            const inputEl = document.getElementById(dropzoneID);
-                            if (inputEl) inputEl.click();
-                        }}
-                    />
-                    {fileDropError !== null && (
-                        <Paragraph className="dropzone__error">Error: {fileDropError}</Paragraph>
-                    )}
+                    <div className="dropzone__content">
+                        <p className="dropzone__text">
+                            {dragOver ? (
+                                <>
+                                    Release to upload
+                                    <br />
+                                    or
+                                </>
+                            ) : (
+                                <>
+                                    Drag {accept}
+                                    {isMulti ? "s" : ""} here to upload
+                                    <br />
+                                    or
+                                </>
+                            )}
+                        </p>
+                        <Button
+                            text="Browse Files"
+                            size="small"
+                            onClick={() => {
+                                const inputEl = document.getElementById(dropzoneID);
+                                if (inputEl) inputEl.click();
+                            }}
+                        />
+                        {fileDropError !== null && (
+                            <p className="dropzone__error-message">Error: {fileDropError}</p>
+                        )}
+                    </div>
                 </div>
             )}
             <div className="dropzone__items">
@@ -439,25 +418,22 @@ const Dropzone = (props: DropzoneProps) => {
                     </ul>
                 )}
             </div>
-            {!tooltip && helperText ? (
+            {helperText ? (
                 <span
                     className="dropzone__helper form-element__helper"
                     dangerouslySetInnerHTML={{ __html: dompurify.sanitize(helperText) }}
                 ></span>
             ) : null}
             {fieldState.error ? (
-                <span className="form-element__error-text">{String(fieldState.error)}</span>
+                <span className="dropzone-field__error-text form-element__error-text">
+                    {String(fieldState.error)}
+                </span>
             ) : null}
         </div>
     );
 };
 
-const DropItem = (props: {
-    type: string;
-    src: string;
-    uploadsURL: string;
-    onRemove: () => void;
-}) => {
+const DropItem = (props: DropItemProps) => {
     const { type, src, uploadsURL, onRemove } = props;
     const [itemSize, setItemSize] = useState<string | null>(null);
     const [itemDimensions, setItemDimensions] = useState<{ width: number; height: number } | null>(

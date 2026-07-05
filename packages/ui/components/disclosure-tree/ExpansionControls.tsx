@@ -2,13 +2,7 @@ import React, { forwardRef } from "react";
 import Button from "../button/Button";
 import Icon from "../icon/Icon";
 
-type ExpansionControlsProps = {
-    controlsId: string;
-    active?: boolean;
-    expanded: boolean;
-    onClick: () => void;
-    onKeyDown?: (e: React.KeyboardEvent<any>) => void;
-};
+import type { ExpansionControlsProps } from "./types";
 
 const ExpansionControls = forwardRef<any, ExpansionControlsProps>(
     ({ controlsId, expanded: initialExpandedState, onClick, onKeyDown }, ref) => {
