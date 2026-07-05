@@ -6,7 +6,7 @@
     "author": "Megan Bailey",
     "repository": {
         "type": "git",
-        "url": "https://github.com/megbailey/megbailey-core.git",
+        "url": "git+https://github.com/megbailey/megbailey-core.git",
         "directory": "packages/ui"
     },
     "bugs": {
