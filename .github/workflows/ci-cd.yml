@@ -60,17 +60,24 @@ jobs:
             - name: Upgrade npm for trusted publishing
               run: npm install -g npm@latest
 
-            - name: Setup Node.js for npm (OIDC)
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "24"
-                  registry-url: https://registry.npmjs.org
+            - name: Prepare npm OIDC publishing
+              run: |
+                  npm config set registry https://registry.npmjs.org
+                  # setup-node can write an empty _authToken that blocks OIDC
+                  for npmrc in "$HOME/.npmrc" .npmrc packages/utils/.npmrc packages/ui/.npmrc; do
+                    if [ -f "$npmrc" ]; then
+                      sed -i '/registry.npmjs.org\/:_authToken/d' "$npmrc"
+                    fi
+                  done
+                  echo "npm $(npm --version), node $(node --version)"
 
             - name: Publish @megbailey/utils to npm
-              run: npm publish --workspace=@megbailey/utils --access public
+              working-directory: packages/utils
+              run: npm publish --access public
 
             - name: Publish @megbailey/ui to npm
-              run: npm publish --workspace=@megbailey/ui --access public
+              working-directory: packages/ui
+              run: npm publish --access public
 
             - name: Setup Node.js for GitHub Packages
               uses: actions/setup-node@v4
@@ -80,11 +87,13 @@ jobs:
                   scope: "@megbailey"
 
             - name: Publish @megbailey/utils to GitHub Packages
-              run: npm publish --workspace=@megbailey/utils
+              working-directory: packages/utils
+              run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Publish @megbailey/ui to GitHub Packages
-              run: npm publish --workspace=@megbailey/ui
+              working-directory: packages/ui
+              run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
