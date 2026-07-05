@@ -6,6 +6,8 @@
         "build": "tsc",
         "test": "vitest run --config vitest.unit.config.ts",
         "test:watch": "vitest --config vitest.unit.config.ts",
+        "test:coverage": "vitest run --config vitest.unit.config.ts --coverage",
+        "test:changed": "vitest run --config vitest.unit.config.ts --changed",
         "storybook": "lsof -t -i:6006 | grep . && kill -9 $(lsof -t -i:6006); storybook dev -p 6006",
         "build-storybook": "storybook build"
     },

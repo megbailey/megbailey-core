@@ -6,7 +6,10 @@
     ],
     "scripts": {
         "format": "prettier --write \"**/*.{ts,tsx}\"",
-        "format:check": "prettier --check \"**/*.{ts,tsx}\""
+        "format:check": "prettier --check \"**/*.{ts,tsx}\"",
+        "test": "npm run test --workspace=@megbailey/ui",
+        "test:watch": "npm run test:watch --workspace=@megbailey/ui",
+        "test:coverage": "npm run test:coverage --workspace=@megbailey/ui"
     },
     "devDependencies": {
         "prettier": "^3.6.2"
