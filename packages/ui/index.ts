@@ -42,7 +42,11 @@ export type {
     ButtonSelectTheme,
 } from "./components/form-elements/button-select/types";
 
-export { default as Dropzone, DEFAULT_MAX_FILE_SIZE } from "./components/form-elements/dropzone/Dropzone";
+export {
+    default as Dropzone,
+    DEFAULT_MAX_FILE_SIZE,
+} from "./components/form-elements/dropzone/Dropzone";
+
 export type {
     DropItemProps,
     DropzoneAccept,
@@ -54,7 +58,11 @@ export type {
     ValidationResult,
 } from "./components/form-elements/dropzone/types";
 
-export { default as GraphQLSelect, parseJSONOptionValue } from "./components/form-elements/graphql-select/GraphQLSelect";
+export {
+    default as GraphQLSelect,
+    parseJSONOptionValue,
+} from "./components/form-elements/graphql-select/GraphQLSelect";
+
 export type {
     GraphQLSelectChangeEvent,
     GraphQLSelectItem,

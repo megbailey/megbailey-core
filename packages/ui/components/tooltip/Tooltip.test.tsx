@@ -33,9 +33,7 @@ describe("Tooltip", () => {
         ["left", "c-tooltip--left"],
         ["right", "c-tooltip--right"],
     ] as const)("applies position class %s", (position, expectedClass) => {
-        const { container } = render(
-            <Tooltip text="Positioned" position={position} showTip />
-        );
+        const { container } = render(<Tooltip text="Positioned" position={position} showTip />);
 
         expect(container.querySelector(`.${expectedClass}`)).toBeInTheDocument();
     });
@@ -59,9 +57,7 @@ describe("Tooltip", () => {
     });
 
     it("applies a custom className on the root", () => {
-        const { container } = render(
-            <Tooltip text="Custom" className="my-tooltip" showTip />
-        );
+        const { container } = render(<Tooltip text="Custom" className="my-tooltip" showTip />);
 
         expect(container.querySelector(".c-tooltip.my-tooltip")).toBeInTheDocument();
     });

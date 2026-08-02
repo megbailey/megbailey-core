@@ -36,7 +36,7 @@ const meta = {
         size: "medium",
         layout: "inline",
         active: false,
-        onClick: fn(() => console.log('button clicked!')),
+        onClick: fn(() => console.log("button clicked!")),
     },
 } satisfies Meta<typeof Button>;
 
@@ -77,11 +77,7 @@ export const ActiveState: Story = {
                 <Button {...args} active text={`${args.text} (active)`} />
             </div>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                <Button
-                    {...args}
-                    active={false}
-                    text={`${args.text} (default)`}
-                />
+                <Button {...args} active={false} text={`${args.text} (default)`} />
                 <Button {...args} active text={`${args.text} (active)`} />
             </div>
         </div>

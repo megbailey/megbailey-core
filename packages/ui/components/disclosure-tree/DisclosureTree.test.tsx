@@ -42,13 +42,7 @@ describe("DisclosureTree", () => {
     });
 
     it("does not render items when collapseOnLoad is true", () => {
-        render(
-            <DisclosureTree
-                id="collapsed-tree"
-                items={mockItems}
-                collapseOnLoad
-            />
-        );
+        render(<DisclosureTree id="collapsed-tree" items={mockItems} collapseOnLoad />);
 
         expect(screen.queryByText("Item 1")).not.toBeInTheDocument();
         expect(screen.queryByText("Item 2")).not.toBeInTheDocument();
@@ -75,13 +69,7 @@ describe("DisclosureTree", () => {
     });
 
     it("shows pre-expanded branches", () => {
-        render(
-            <DisclosureTree
-                id="pre-expanded-tree"
-                items={mockItems}
-                preExpandedIds={["1"]}
-            />
-        );
+        render(<DisclosureTree id="pre-expanded-tree" items={mockItems} preExpandedIds={["1"]} />);
 
         expect(screen.getByText("Item 1a")).toBeInTheDocument();
     });
@@ -90,13 +78,7 @@ describe("DisclosureTree", () => {
         const user = userEvent.setup();
         const onKeyEscape = vi.fn();
 
-        render(
-            <DisclosureTree
-                id="escape-tree"
-                items={mockItems}
-                onKeyEscape={onKeyEscape}
-            />
-        );
+        render(<DisclosureTree id="escape-tree" items={mockItems} onKeyEscape={onKeyEscape} />);
 
         const firstLeaf = screen.getByText("Item 1").closest("[tabindex='0']");
         expect(firstLeaf).toBeTruthy();

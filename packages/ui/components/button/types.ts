@@ -13,7 +13,7 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement | HTMLAnch
     size?: string;
     theme?: string;
     color?: string;
-};
+}
 
 export interface ButtonProps extends HTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
     className?: string;

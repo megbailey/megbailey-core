@@ -92,13 +92,7 @@ describe("Button", () => {
     });
 
     it("forwards aria attributes to the button", () => {
-        render(
-            <Button
-                text="Expand"
-                aria-expanded={true}
-                aria-controls="panel-1"
-            />
-        );
+        render(<Button text="Expand" aria-expanded={true} aria-controls="panel-1" />);
 
         const button = screen.getByRole("button");
         expect(button).toHaveAttribute("aria-expanded", "true");

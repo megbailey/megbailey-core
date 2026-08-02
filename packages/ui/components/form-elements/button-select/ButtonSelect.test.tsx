@@ -40,23 +40,13 @@ describe("ButtonSelect", () => {
         ["danger", "btn--danger"],
         ["success", "btn--success"],
     ] as const)("applies theme %s to option buttons", (theme, expectedClass) => {
-        render(
-            <ButtonSelect
-                options={["small"]}
-                theme={theme}
-            />
-        );
+        render(<ButtonSelect options={["small"]} theme={theme} />);
 
         expect(screen.getByRole("button")).toHaveClass(expectedClass);
     });
 
     it("marks initialValue options as active in single-select mode", () => {
-        render(
-            <ButtonSelect
-                options={["small", "medium", "large"]}
-                initialValue="medium"
-            />
-        );
+        render(<ButtonSelect options={["small", "medium", "large"]} initialValue="medium" />);
 
         expect(screen.getByText("medium").closest("button")).toHaveClass("btn--active");
         expect(screen.getByText("small").closest("button")).not.toHaveClass("btn--active");
@@ -126,13 +116,7 @@ describe("ButtonSelect", () => {
         const user = userEvent.setup();
         const onChange = vi.fn();
 
-        render(
-            <ButtonSelect
-                isDisabled
-                options={["small", "medium"]}
-                onChange={onChange}
-            />
-        );
+        render(<ButtonSelect isDisabled options={["small", "medium"]} onChange={onChange} />);
 
         await user.click(screen.getByText("medium"));
 
@@ -141,10 +125,7 @@ describe("ButtonSelect", () => {
 
     it("applies a custom className on the root", () => {
         const { container } = render(
-            <ButtonSelect
-                className="my-button-select"
-                options={["small"]}
-            />
+            <ButtonSelect className="my-button-select" options={["small"]} />
         );
 
         expect(container.querySelector(".my-button-select")).toBeInTheDocument();

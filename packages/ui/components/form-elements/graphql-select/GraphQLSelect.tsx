@@ -8,11 +8,7 @@ import type { InformedSelectOption } from "../informed-select/types";
 
 import { resolveAmbiguousPath, isCallableFunction } from "@megbailey/utils";
 
-import type {
-    GraphQLSelectItem,
-    GraphQLSelectProps,
-    ParseJSONOptionValueEvent,
-} from "./types";
+import type { GraphQLSelectItem, GraphQLSelectProps, ParseJSONOptionValueEvent } from "./types";
 
 export type {
     GraphQLSelectChangeEvent,

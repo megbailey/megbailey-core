@@ -74,7 +74,7 @@ const ButtonSelect = ({
                                         const nextState = [...selectedOptions, itemValue];
                                         setSelectedOptions(nextState);
                                         if (typeof onChange === "function") onChange(nextState);
-                                    } else if ( isMulti && selectedOptions.includes(itemValue) ) {
+                                    } else if (isMulti && selectedOptions.includes(itemValue)) {
                                         const newState = selectedOptions.filter(
                                             (selectedValue) => selectedValue !== itemValue
                                         );

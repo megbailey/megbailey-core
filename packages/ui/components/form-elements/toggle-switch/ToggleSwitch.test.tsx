@@ -12,13 +12,9 @@ describe("ToggleSwitch", () => {
     });
 
     it("renders helper text below the switch", () => {
-        render(
-            <ToggleSwitch helperText="Send me sound notifications for updates" />
-        );
+        render(<ToggleSwitch helperText="Send me sound notifications for updates" />);
 
-        expect(
-            screen.getByText("Send me sound notifications for updates")
-        ).toBeInTheDocument();
+        expect(screen.getByText("Send me sound notifications for updates")).toBeInTheDocument();
     });
 
     it("renders unchecked by default", () => {
@@ -35,13 +31,7 @@ describe("ToggleSwitch", () => {
     });
 
     it("uses custom onLabel and offLabel in screen-reader text", () => {
-        render(
-            <ToggleSwitch
-                initialValue={true}
-                onLabel="Enabled"
-                offLabel="Disabled"
-            />
-        );
+        render(<ToggleSwitch initialValue={true} onLabel="Enabled" offLabel="Disabled" />);
 
         expect(screen.getByText("Enabled")).toBeInTheDocument();
     });

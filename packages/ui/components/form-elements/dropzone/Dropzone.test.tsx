@@ -31,11 +31,7 @@ describe("Dropzone", () => {
 
     it("renders document upload copy when accept is document", () => {
         renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-                label="Upload PDF or Word Documents"
-            />
+            <Dropzone {...defaultProps} accept="document" label="Upload PDF or Word Documents" />
         );
 
         expect(screen.getByText("Upload PDF or Word Documents")).toBeInTheDocument();
@@ -44,24 +40,14 @@ describe("Dropzone", () => {
 
     it("renders plural upload copy when isMulti is true", () => {
         renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="image"
-                isMulti
-                label="Upload Multiple Images"
-            />
+            <Dropzone {...defaultProps} accept="image" isMulti label="Upload Multiple Images" />
         );
 
         expect(screen.getByText(/Drag images here to upload/i)).toBeInTheDocument();
     });
 
     it("adds the required label class when isRequired is true", () => {
-        renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                isRequired
-            />
-        );
+        renderWithForm(<Dropzone {...defaultProps} isRequired />);
 
         expect(document.querySelector(".dropzone-field__label--required")).toBeInTheDocument();
     });
@@ -76,10 +62,7 @@ describe("Dropzone", () => {
 
     it("applies a custom className on the root", () => {
         const { container } = renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                className="my-dropzone"
-            />
+            <Dropzone {...defaultProps} className="my-dropzone" />
         );
 
         expect(container.querySelector(".dropzone-field.my-dropzone")).toBeInTheDocument();
@@ -89,11 +72,7 @@ describe("Dropzone", () => {
         const uploadFilePromise = vi.fn().mockResolvedValue({ src: "photo.png" });
 
         renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-                uploadFilePromise={uploadFilePromise}
-            />
+            <Dropzone {...defaultProps} accept="document" uploadFilePromise={uploadFilePromise} />
         );
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
@@ -110,24 +89,14 @@ describe("Dropzone", () => {
 
     it("shows uploaded files from initialValue", () => {
         renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-                initialValue={["existing.pdf"]}
-            />
+            <Dropzone {...defaultProps} accept="document" initialValue={["existing.pdf"]} />
         );
 
         expect(screen.getByText("existing.pdf")).toBeInTheDocument();
     });
 
     it("rejects files larger than maxFileSize", async () => {
-        renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-                maxFileSize={1024}
-            />
-        );
+        renderWithForm(<Dropzone {...defaultProps} accept="document" maxFileSize={1024} />);
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         fireEvent.change(input, {
@@ -142,12 +111,7 @@ describe("Dropzone", () => {
     });
 
     it("rejects unsupported document types", async () => {
-        renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-            />
-        );
+        renderWithForm(<Dropzone {...defaultProps} accept="document" />);
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         fireEvent.change(input, {
@@ -210,12 +174,7 @@ describe("Dropzone", () => {
     });
 
     it("sets the multiple attribute on the file input when isMulti is true", () => {
-        renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                isMulti
-            />
-        );
+        renderWithForm(<Dropzone {...defaultProps} isMulti />);
 
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         expect(input.multiple).toBe(true);
@@ -231,24 +190,14 @@ describe("Dropzone", () => {
     });
 
     it("renders an image thumbnail for image uploads", () => {
-        renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="image"
-                initialValue={["photo.png"]}
-            />
-        );
+        renderWithForm(<Dropzone {...defaultProps} accept="image" initialValue={["photo.png"]} />);
 
         expect(document.querySelector(".dropzone__image-thumbnail")).toBeInTheDocument();
     });
 
     it("renders a file icon for document uploads", () => {
         renderWithForm(
-            <Dropzone
-                {...defaultProps}
-                accept="document"
-                initialValue={["report.pdf"]}
-            />
+            <Dropzone {...defaultProps} accept="document" initialValue={["report.pdf"]} />
         );
 
         expect(document.querySelector(".icon--file")).toBeInTheDocument();

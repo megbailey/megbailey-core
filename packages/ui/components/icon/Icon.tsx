@@ -77,13 +77,7 @@ const iconPaths: Record<string, React.ReactNode> = {
     ),
 };
 
-const Icon = ({
-    name,
-    size = "normal",
-    theme = "regular",
-    color,
-    className,
-}: IconProps) => {
+const Icon = ({ name, size = "normal", theme = "regular", color, className }: IconProps) => {
     const svg = iconPaths[name];
     if (!svg) {
         throw new Error(

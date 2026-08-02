@@ -10,9 +10,7 @@ describe("Paragraph", () => {
         );
 
         expect(
-            screen.getByText(
-                "This is a paragraph of text rendered by the Paragraph component."
-            )
+            screen.getByText("This is a paragraph of text rendered by the Paragraph component.")
         ).toBeInTheDocument();
     });
 

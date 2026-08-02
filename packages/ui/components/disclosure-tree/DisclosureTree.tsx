@@ -271,66 +271,61 @@ const Branch = ({
     );
 };
 
-const Leaf = forwardRef<any, LeafProps>(({ 
-    className = null,
-    id,
-    level,
-    onKeyDown,
-    isBranch = false,
-    item
-}, ref) => {
-    const { nodeRefs, expandedIds } = useContext(DisclosureTreeContext);
+const Leaf = forwardRef<any, LeafProps>(
+    ({ className = null, id, level, onKeyDown, isBranch = false, item }, ref) => {
+        const { nodeRefs, expandedIds } = useContext(DisclosureTreeContext);
 
-    const onKeyArrowUpDown = (e: React.KeyboardEvent<any>) => {
-        switch (e.key) {
-            case "ArrowUp":
-                const prevItems = Object.keys(nodeRefs.current).filter(
-                    (x) => x < id && nodeRefs.current[x] !== null
-                );
-                const prev = prevItems[prevItems.length - 1];
-                if (prev) {
-                    nodeRefs.current[prev].focus();
-                }
-                break;
-            case "ArrowDown":
-                const nextItems = Object.keys(nodeRefs.current).filter(
-                    (x) => x > id && nodeRefs.current[x] !== null
-                );
-                const next = nextItems[0];
-                if (next) {
-                    nodeRefs.current[next].focus();
-                }
-                break;
-        }
-    };
-
-    //('Leaf render', id, level, isBranch, item)
-    const isExpanded = expandedIds.includes(id);
-    return (
-        <div
-            className={clsx(dTreeLeafClassName, className)}
-            ref={(el: any) => {
-                nodeRefs.current[id] = el;
-                if (ref) {
-                    if (typeof ref === "function") {
-                        ref(el);
-                    } else {
-                        (ref as any).current = el;
+        const onKeyArrowUpDown = (e: React.KeyboardEvent<any>) => {
+            switch (e.key) {
+                case "ArrowUp":
+                    const prevItems = Object.keys(nodeRefs.current).filter(
+                        (x) => x < id && nodeRefs.current[x] !== null
+                    );
+                    const prev = prevItems[prevItems.length - 1];
+                    if (prev) {
+                        nodeRefs.current[prev].focus();
                     }
-                }
-            }}
-            onKeyDown={(e: React.KeyboardEvent<any>) => {
-                if (onKeyDown) {
-                    onKeyDown(e);
-                }
-                onKeyArrowUpDown(e);
-            }}
-            tabIndex={0}
-        >
-            {item.item}
-        </div>
-    );
-});
+                    break;
+                case "ArrowDown":
+                    const nextItems = Object.keys(nodeRefs.current).filter(
+                        (x) => x > id && nodeRefs.current[x] !== null
+                    );
+                    const next = nextItems[0];
+                    if (next) {
+                        nodeRefs.current[next].focus();
+                    }
+                    break;
+            }
+        };
+
+        //('Leaf render', id, level, isBranch, item)
+        const isExpanded = expandedIds.includes(id);
+        return (
+            <div
+                className={clsx(dTreeLeafClassName, className)}
+                ref={(el: any) => {
+                    nodeRefs.current[id] = el;
+                    if (ref) {
+                        if (typeof ref === "function") {
+                            ref(el);
+                        } else {
+                            (ref as any).current = el;
+                        }
+                    }
+                }}
+                onKeyDown={(e: React.KeyboardEvent<any>) => {
+                    if (onKeyDown) {
+                        onKeyDown(e);
+                    }
+                    onKeyArrowUpDown(e);
+                }}
+                tabIndex={0}
+            >
+                {item.item}
+            </div>
+        );
+    }
+);
 
 function remove(array: any[], value: any) {
     const index = array.indexOf(value);

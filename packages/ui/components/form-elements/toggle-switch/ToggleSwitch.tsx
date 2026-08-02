@@ -50,9 +50,7 @@ const ToggleSwitch = (props: ToggleSwitchProps) => {
                 onClick={handleToggle}
             >
                 <span className="toggle-switch__thumb" aria-hidden="true" />
-                <span className="toggle-switch__sr-only">
-                    {switchState ? onLabel : offLabel}
-                </span>
+                <span className="toggle-switch__sr-only">{switchState ? onLabel : offLabel}</span>
             </button>
 
             {helperText && (

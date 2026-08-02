@@ -21,54 +21,55 @@ const Button = forwardRef<any, ButtonProps>(({
     children,
     ...other
 }, ref ) => {
-    const btnClasses = clsx(
-        "btn",
-        theme && `btn--${theme}`,
-        size && `btn--${size}`,
-        layout && `btn--${layout}`,
-        {
-            "btn--active": active,
-        },
-        className
-    );
+        const btnClasses = clsx(
+            "btn",
+            theme && `btn--${theme}`,
+            size && `btn--${size}`,
+            layout && `btn--${layout}`,
+            {
+                "btn--active": active,
+            },
+            className
+        );
 
-    const buttonContent = (
-        <>
-            {icon && (
-                <Icon name={icon.name} size={icon.size} theme={icon.theme} color={icon.color} />
-            )}
-            {text && <span>{text}</span>}
-            {children}
-        </>
-    );
+        const buttonContent = (
+            <>
+                {icon && (
+                    <Icon name={icon.name} size={icon.size} theme={icon.theme} color={icon.color} />
+                )}
+                {text && <span>{text}</span>}
+                {children}
+            </>
+        );
 
-    if (href) {
+        if (href) {
+            return (
+                <a
+                    ref={ref}
+                    className={btnClasses}
+                    href={href}
+                    onClick={onClick}
+                    target={target}
+                    {...(other as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+                >
+                    {buttonContent}
+                </a>
+            );
+        }
+
         return (
-            <a
+            <button
                 ref={ref}
+                type="button"
                 className={btnClasses}
-                href={href}
                 onClick={onClick}
-                target={target}
-                {...(other as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+                {...(other as React.ButtonHTMLAttributes<HTMLButtonElement>)}
             >
                 {buttonContent}
-            </a>
+            </button>
         );
     }
-
-    return (
-        <button
-            ref={ref}
-            type="button"
-            className={btnClasses}
-            onClick={onClick}
-            {...(other as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-        >
-            {buttonContent}
-        </button>
-    );
-});
+);
 
 Button.displayName = "Button";
 

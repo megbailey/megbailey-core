@@ -12,13 +12,7 @@ const options = [
 
 describe("InformedSelect", () => {
     it("renders the label", () => {
-        renderWithForm(
-            <InformedSelect
-                field="mySelect"
-                label="Select Option"
-                options={options}
-            />
-        );
+        renderWithForm(<InformedSelect field="mySelect" label="Select Option" options={options} />);
 
         expect(screen.getByText("Select Option")).toBeInTheDocument();
     });
@@ -37,35 +31,21 @@ describe("InformedSelect", () => {
     });
 
     it("renders a combobox", () => {
-        renderWithForm(
-            <InformedSelect
-                field="mySelect"
-                options={options}
-            />
-        );
+        renderWithForm(<InformedSelect field="mySelect" options={options} />);
 
         expect(screen.getByRole("combobox")).toBeInTheDocument();
     });
 
     it("disables the combobox when isDisabled is true", () => {
         const { container } = renderWithForm(
-            <InformedSelect
-                field="mySelect"
-                options={options}
-                isDisabled
-            />
+            <InformedSelect field="mySelect" options={options} isDisabled />
         );
 
         expect(container.querySelector('[aria-disabled="true"]')).toBeInTheDocument();
     });
 
     it("wraps the control in the select form element class", () => {
-        const { container } = renderWithForm(
-            <InformedSelect
-                field="mySelect"
-                options={options}
-            />
-        );
+        const { container } = renderWithForm(<InformedSelect field="mySelect" options={options} />);
 
         expect(container.querySelector(".form-element--select")).toBeInTheDocument();
     });
@@ -89,11 +69,7 @@ describe("InformedSelect", () => {
 
     it("applies a custom className to the select control", () => {
         const { container } = renderWithForm(
-            <InformedSelect
-                field="mySelect"
-                options={options}
-                className="my-informed-select"
-            />
+            <InformedSelect field="mySelect" options={options} className="my-informed-select" />
         );
 
         expect(container.querySelector(".my-informed-select")).toBeInTheDocument();

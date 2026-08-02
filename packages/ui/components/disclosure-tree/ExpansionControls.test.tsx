@@ -6,13 +6,7 @@ import ExpansionControls from "./ExpansionControls";
 
 describe("ExpansionControls", () => {
     it("renders collapsed controls with plus icon", () => {
-        render(
-            <ExpansionControls
-                controlsId="tree--group-1"
-                expanded={false}
-                onClick={vi.fn()}
-            />
-        );
+        render(<ExpansionControls controlsId="tree--group-1" expanded={false} onClick={vi.fn()} />);
 
         const button = screen.getByRole("button");
         expect(button).toHaveAttribute("aria-expanded", "false");
@@ -21,13 +15,7 @@ describe("ExpansionControls", () => {
     });
 
     it("renders expanded controls with minus icon", () => {
-        render(
-            <ExpansionControls
-                controlsId="tree--group-1"
-                expanded={true}
-                onClick={vi.fn()}
-            />
-        );
+        render(<ExpansionControls controlsId="tree--group-1" expanded={true} onClick={vi.fn()} />);
 
         expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
         expect(document.querySelector(".icon--minus-circle")).toBeInTheDocument();
@@ -37,13 +25,7 @@ describe("ExpansionControls", () => {
         const user = userEvent.setup();
         const onClick = vi.fn();
 
-        render(
-            <ExpansionControls
-                controlsId="tree--group-1"
-                expanded={false}
-                onClick={onClick}
-            />
-        );
+        render(<ExpansionControls controlsId="tree--group-1" expanded={false} onClick={onClick} />);
 
         await user.click(screen.getByRole("button"));
 
@@ -53,13 +35,7 @@ describe("ExpansionControls", () => {
     it("toggles aria-expanded after click", async () => {
         const user = userEvent.setup();
 
-        render(
-            <ExpansionControls
-                controlsId="tree--group-1"
-                expanded={false}
-                onClick={vi.fn()}
-            />
-        );
+        render(<ExpansionControls controlsId="tree--group-1" expanded={false} onClick={vi.fn()} />);
 
         const button = screen.getByRole("button");
         await user.click(button);
