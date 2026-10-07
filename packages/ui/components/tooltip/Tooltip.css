@@ -1,0 +1,109 @@
+.c-tooltip {
+    --c-tooltip-bg: #1c1c1e;
+    --c-tooltip-fg: #fff;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    color: #8e8e93;
+    line-height: 0;
+    cursor: help;
+}
+
+.c-tooltip--light {
+    --c-tooltip-bg: #fff;
+    --c-tooltip-fg: #1c1c1e;
+}
+
+.c-tooltip__text {
+    display: none;
+    position: absolute;
+    z-index: 30;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: 16rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    background: var(--c-tooltip-bg);
+    color: var(--c-tooltip-fg);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.4;
+    text-align: left;
+    white-space: normal;
+    pointer-events: none;
+}
+
+.c-tooltip--light .c-tooltip__text {
+    box-shadow: 0 4px 16px rgba(28, 28, 30, 0.16);
+}
+
+.c-tooltip__text.show {
+    display: block;
+}
+
+.c-tooltip--bottom .c-tooltip__text {
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.c-tooltip--top .c-tooltip__text {
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.c-tooltip--right .c-tooltip__text {
+    top: 50%;
+    left: calc(100% + 8px);
+    transform: translateY(-50%);
+}
+
+.c-tooltip--left .c-tooltip__text {
+    top: 50%;
+    right: calc(100% + 8px);
+    transform: translateY(-50%);
+}
+
+.c-tooltip__text::before {
+    content: "";
+    position: absolute;
+    border: 6px solid transparent;
+}
+
+.c-tooltip__text--no-arrow::before {
+    content: none;
+}
+
+.c-tooltip--bottom .c-tooltip__text::before {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-width: 0;
+    border-bottom-color: var(--c-tooltip-bg);
+}
+
+.c-tooltip--top .c-tooltip__text::before {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-width: 0;
+    border-top-color: var(--c-tooltip-bg);
+}
+
+.c-tooltip--right .c-tooltip__text::before {
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border-left-width: 0;
+    border-right-color: var(--c-tooltip-bg);
+}
+
+.c-tooltip--left .c-tooltip__text::before {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-right-width: 0;
+    border-left-color: var(--c-tooltip-bg);
+}

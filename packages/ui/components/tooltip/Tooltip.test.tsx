@@ -50,6 +50,12 @@ describe("Tooltip", () => {
         expect(document.querySelector(".c-tooltip__text.show")).not.toBeInTheDocument();
     });
 
+    it("applies the theme class", () => {
+        const { container } = render(<Tooltip text="Themed" theme="light" showTip />);
+
+        expect(container.querySelector(".c-tooltip--light")).toBeInTheDocument();
+    });
+
     it("removes the arrow class when arrow is false", () => {
         render(<Tooltip text="No arrow" arrow={false} showTip />);
 

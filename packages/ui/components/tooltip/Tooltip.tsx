@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Icon from "../icon/Icon";
 
 import type { TooltipProps } from "./types";
+import "./Tooltip.css";
 
 export type { TooltipPosition, TooltipProps, TooltipTheme, TooltipType } from "./types";
 
@@ -50,6 +51,7 @@ const Tooltip = ({
                 [`${tooltipClass}__${type}`]: propValues.component.includes(type) && type,
                 [`${tooltipClass}--${position}`]:
                     propValues.position.includes(position) && position,
+                [`${tooltipClass}--${theme}`]: propValues.theme.includes(theme) && theme,
             })}
             onMouseEnter={() => setShowTip(true)}
             onMouseLeave={() => setShowTip(false)}
