@@ -1,6 +1,6 @@
 {
     "name": "@megbailey/ui",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "React component library with W3 design patterns, new form elements, GraphQL integrations, and hooks.",
     "license": "MIT",
     "author": "Megan Bailey",
