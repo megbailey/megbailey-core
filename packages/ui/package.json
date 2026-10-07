@@ -59,7 +59,7 @@
     "dependencies": {
         "@megbailey/utils": "1.0.3",
         "clsx": "^2.1.1",
-        "dompurify": "^3.2.4",
+        "dompurify": "^3.4.16",
         "graphql-tag": "^2.12.6",
         "uniqid": "^5.4.0"
     },
