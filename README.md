@@ -62,17 +62,25 @@ Package-specific scripts (Storybook, etc.) live in [packages/ui/package.json](./
 
 ## Publishing
 
-Packages publish to **npm** (OIDC trusted publishing) and **GitHub Packages** Repositories.
+`@megbailey/utils` and `@megbailey/ui` share one version. A `v*` tag push runs [`.github/workflows/ci-cd.yml`](./.github/workflows/ci-cd.yml), which publishes `@megbailey/utils`, then `@megbailey/ui`, to npm (OIDC trusted publishing) and GitHub Packages. Do not run `npm publish` locally.
 
-### Release (CI)
+### Release
 
-1. Bump `version` in `packages/utils/package.json` and `packages/ui/package.json`
-2. Commit, tag, and push:
+From the repo root, on `main`, with the release changes already committed:
+
+1. Bump the patch segment in both packages (`1.0.3` becomes `1.0.4`) unless this release is a minor or major bump. A minor bump increments the middle number and sets the patch to `0`. A major bump increments the first number and sets the other two to `0`.
+2. Set `version` in `packages/utils/package.json` and `packages/ui/package.json` to that version, and set `@megbailey/ui`'s dependency on `@megbailey/utils` to the same exact version.
+3. Run `npm run build` and `npm test`.
+4. Commit the version edits, tag that commit, and push the branch and that tag:
 
 ```bash
-git tag v1.0.1
-git push origin main --tags
+git commit -m "Release v1.0.4"
+git tag v1.0.4
+git push origin HEAD
+git push origin v1.0.4
 ```
+
+The tag must match `version`. Leave an existing tag where it is.
 
 ## License
 
