@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Form } from "informed";
 import { fn } from "storybook/test";
@@ -32,7 +33,7 @@ const meta = {
         helperText: { control: "text" },
         accept: {
             control: "select",
-            options: ["image", "document"],
+            options: ["image", "document", "any"],
         },
         isMulti: { control: "boolean" },
         isRequired: { control: "boolean" },
@@ -73,5 +74,24 @@ export const MultiUpload: Story = {
     args: {
         isMulti: true,
         label: "Upload Multiple Images",
+    },
+};
+
+export const LocalFileSelection: Story = {
+    render: function LocalFileSelectionStory() {
+        const [files, setFiles] = useState<File[]>([]);
+        return (
+            <Dropzone
+                label="Files or folder"
+                helperText="Drop files or a folder here, or choose them below."
+                accept="any"
+                isMulti
+                allowDirectories
+                files={files}
+                onFilesChange={setFiles}
+                chooseFilesLabel="Choose files"
+                chooseFolderLabel="Choose folder"
+            />
+        );
     },
 };

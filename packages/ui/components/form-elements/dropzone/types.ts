@@ -34,7 +34,7 @@ export function getUploadErrorMessage(error: unknown): string {
     return "An error occurred during upload.";
 }
 
-export type DropzoneAccept = "image" | "document";
+export type DropzoneAccept = "image" | "document" | "any";
 export type DropzoneAspectRatio = "1:1" | "3:2" | "4:3" | "4:5" | "9:16" | "16:9";
 
 export type DropzoneUserProps = {
@@ -57,6 +57,23 @@ export type DropzoneUserProps = {
     uploadFilePromise: (file: File) => Promise<UploadResult>;
     uploadsURL: string;
     onItemRemove?: (index: number) => void;
+    onFilesChange?: undefined;
+};
+
+/** Local file selection. Keeps File objects instead of uploading them. */
+export type DropzoneSelectionProps = {
+    files: File[];
+    onFilesChange: (files: File[]) => void;
+    className?: string;
+    label?: string;
+    helperText?: string;
+    accept?: DropzoneAccept | string;
+    isMulti?: boolean;
+    disabled?: boolean;
+    allowDirectories?: boolean;
+    chooseFilesLabel?: string;
+    chooseFolderLabel?: string;
+    clearLabel?: string;
 };
 
 export type DropzoneProps = DropzoneUserProps &
@@ -64,7 +81,8 @@ export type DropzoneProps = DropzoneUserProps &
     Omit<
         InputHTMLAttributes<HTMLInputElement>,
         "onDrop" | "accept" | "multiple" | "type" | "value" | "defaultValue"
-    >;
+    >
+    | DropzoneSelectionProps;
 
 export type DropItemProps = {
     type: string;

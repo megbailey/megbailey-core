@@ -52,6 +52,7 @@ export type {
     DropzoneAccept,
     DropzoneAspectRatio,
     DropzoneProps,
+    DropzoneSelectionProps,
     DropzoneUserProps,
     ImageDimensions,
     UploadResult,

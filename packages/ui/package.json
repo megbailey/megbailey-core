@@ -32,6 +32,61 @@
             "import": "./dist/index.js",
             "default": "./dist/index.js"
         },
+        "./button": {
+            "types": "./dist/components/button/Button.d.ts",
+            "import": "./dist/components/button/Button.js",
+            "default": "./dist/components/button/Button.js"
+        },
+        "./icon": {
+            "types": "./dist/components/icon/Icon.d.ts",
+            "import": "./dist/components/icon/Icon.js",
+            "default": "./dist/components/icon/Icon.js"
+        },
+        "./tooltip": {
+            "types": "./dist/components/tooltip/Tooltip.d.ts",
+            "import": "./dist/components/tooltip/Tooltip.js",
+            "default": "./dist/components/tooltip/Tooltip.js"
+        },
+        "./paragraph": {
+            "types": "./dist/components/text/Paragraph.d.ts",
+            "import": "./dist/components/text/Paragraph.js",
+            "default": "./dist/components/text/Paragraph.js"
+        },
+        "./disclosure-tree": {
+            "types": "./dist/components/disclosure-tree/DisclosureTree.d.ts",
+            "import": "./dist/components/disclosure-tree/DisclosureTree.js",
+            "default": "./dist/components/disclosure-tree/DisclosureTree.js"
+        },
+        "./expansion-controls": {
+            "types": "./dist/components/disclosure-tree/ExpansionControls.d.ts",
+            "import": "./dist/components/disclosure-tree/ExpansionControls.js",
+            "default": "./dist/components/disclosure-tree/ExpansionControls.js"
+        },
+        "./button-select": {
+            "types": "./dist/components/form-elements/button-select/ButtonSelect.d.ts",
+            "import": "./dist/components/form-elements/button-select/ButtonSelect.js",
+            "default": "./dist/components/form-elements/button-select/ButtonSelect.js"
+        },
+        "./dropzone": {
+            "types": "./dist/components/form-elements/dropzone/Dropzone.d.ts",
+            "import": "./dist/components/form-elements/dropzone/Dropzone.js",
+            "default": "./dist/components/form-elements/dropzone/Dropzone.js"
+        },
+        "./graphql-select": {
+            "types": "./dist/components/form-elements/graphql-select/GraphQLSelect.d.ts",
+            "import": "./dist/components/form-elements/graphql-select/GraphQLSelect.js",
+            "default": "./dist/components/form-elements/graphql-select/GraphQLSelect.js"
+        },
+        "./informed-select": {
+            "types": "./dist/components/form-elements/informed-select/InformedSelect.d.ts",
+            "import": "./dist/components/form-elements/informed-select/InformedSelect.js",
+            "default": "./dist/components/form-elements/informed-select/InformedSelect.js"
+        },
+        "./toggle-switch": {
+            "types": "./dist/components/form-elements/toggle-switch/ToggleSwitch.d.ts",
+            "import": "./dist/components/form-elements/toggle-switch/ToggleSwitch.js",
+            "default": "./dist/components/form-elements/toggle-switch/ToggleSwitch.js"
+        },
         "./package.json": "./package.json"
     },
     "files": [
