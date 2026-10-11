@@ -107,3 +107,18 @@
     border-right-width: 0;
     border-left-color: var(--c-tooltip-bg);
 }
+
+/* Fixed, so opening a tip cannot grow the popup and retrigger hover. */
+.c-tooltip__text.show {
+    position: fixed;
+    top: var(--c-tooltip-top, 0px);
+    left: var(--c-tooltip-left, 0px);
+    right: auto;
+    bottom: auto;
+    transform: none;
+    visibility: hidden;
+}
+
+.c-tooltip__text.show.c-tooltip__text--placed {
+    visibility: visible;
+}
