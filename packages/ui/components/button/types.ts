@@ -32,4 +32,5 @@ export interface ButtonProps extends HTMLAttributes<HTMLButtonElement | HTMLAnch
     "aria-current"?: any;
     icon?: ButtonIconProps;
     children?: ReactNode;
+    disabled?: boolean;
 }

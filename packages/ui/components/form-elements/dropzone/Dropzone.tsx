@@ -9,12 +9,14 @@ import Button from "../../button/Button";
 import type {
     DropItemProps,
     DropzoneProps,
+    DropzoneSelectionProps,
     DropzoneUserProps,
     ImageDimensions,
     UploadResult,
     ValidationResult,
 } from "./types";
 import { getUploadErrorMessage } from "./types";
+import { filesFromDataTransfer } from "./collectDroppedFiles";
 import "./Dropzone.css";
 
 export type {
@@ -22,6 +24,7 @@ export type {
     DropzoneAccept,
     DropzoneAspectRatio,
     DropzoneProps,
+    DropzoneSelectionProps,
     DropzoneUserProps,
     ImageDimensions,
     UploadResult,
@@ -55,7 +58,7 @@ const BarLoader = ({ loading }: { loading: boolean }) => {
     );
 };
 
-const Dropzone = (props: DropzoneProps) => {
+const UploadDropzone = (props: Exclude<DropzoneProps, DropzoneSelectionProps>) => {
     const { render, userProps, ref, fieldState, fieldApi } = useField<DropzoneUserProps, string[]>(
         props as FieldProps<DropzoneUserProps>
     );
@@ -504,6 +507,190 @@ const DropItem = (props: DropItemProps) => {
             />
         </li>
     );
+};
+
+function inputAccept(accept: string | undefined): string | undefined {
+    if (!accept || accept === "any") {
+        return undefined;
+    }
+    if (accept === "image") {
+        return "image/avif,image/gif,image/png,image/jpg,image/jpeg,image/webp";
+    }
+    if (accept === "document") {
+        return [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "text/csv",
+        ].join(",");
+    }
+    return accept;
+}
+
+const SelectionDropzone = ({
+    className,
+    label,
+    helperText,
+    accept = "any",
+    isMulti = false,
+    allowDirectories = false,
+    disabled = false,
+    files,
+    onFilesChange,
+    chooseFilesLabel = "Browse Files",
+    chooseFolderLabel = "Choose folder",
+    clearLabel = "Clear",
+}: DropzoneSelectionProps) => {
+    const [dragOver, setDragOver] = useState(false);
+    const [fileDropError, setFileDropError] = useState<string | null>(null);
+    const dropzoneID = useMemo(() => `dropzone-${uniqid()}`, []);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const folderInputRef = useRef<HTMLInputElement>(null);
+
+    const publish = (selected: File[]) => {
+        setFileDropError(null);
+        onFilesChange(isMulti ? selected : selected.slice(0, 1));
+    };
+
+    const onDragOver = (event: React.DragEvent) => {
+        if (disabled || !Array.from(event.dataTransfer.types).includes("Files")) {
+            return;
+        }
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+        setDragOver(true);
+    };
+
+    const onDrop = async (event: React.DragEvent) => {
+        event.preventDefault();
+        setDragOver(false);
+        if (disabled) {
+            return;
+        }
+        try {
+            publish(await filesFromDataTransfer(event.dataTransfer));
+        } catch {
+            setFileDropError("Could not read the dropped folder.");
+        }
+    };
+
+    return (
+        <div className={clsx("dropzone-field", "form-element", className)}>
+            {label && (
+                <label
+                    className={clsx("dropzone-field__label", "form-element__label")}
+                    htmlFor={dropzoneID}
+                >
+                    {label}
+                </label>
+            )}
+            <div
+                className={clsx("dropzone", {
+                    "dropzone--drag-over": dragOver,
+                    "dropzone--error": fileDropError,
+                    "dropzone--disabled": disabled,
+                })}
+                onDragOver={onDragOver}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={onDrop}
+            >
+                <input
+                    id={dropzoneID}
+                    ref={fileInputRef}
+                    type="file"
+                    style={{ display: "none" }}
+                    multiple={isMulti}
+                    disabled={disabled}
+                    accept={inputAccept(accept)}
+                    onChange={(event) => {
+                        if (disabled) {
+                            return;
+                        }
+                        publish(Array.from(event.target.files ?? []));
+                        event.target.value = "";
+                    }}
+                />
+                {allowDirectories && (
+                    <input
+                        id={`${dropzoneID}-folder`}
+                        ref={folderInputRef}
+                        type="file"
+                        style={{ display: "none" }}
+                        multiple
+                        disabled={disabled}
+                        onChange={(event) => {
+                            if (disabled) {
+                                return;
+                            }
+                            publish(Array.from(event.target.files ?? []));
+                            event.target.value = "";
+                        }}
+                        {...({
+                            webkitdirectory: "",
+                            directory: "",
+                        } as React.InputHTMLAttributes<HTMLInputElement>)}
+                    />
+                )}
+                <div className="dropzone__content">
+                    <p className="dropzone__text">
+                        {dragOver ? (
+                            <>
+                                Release to add
+                                <br />
+                                or
+                            </>
+                        ) : (
+                            helperText || (
+                                <>
+                                    Drag {allowDirectories ? "files or a folder" : "files"} here
+                                    <br />
+                                    or
+                                </>
+                            )
+                        )}
+                    </p>
+                    <div className="dropzone__actions">
+                        <Button
+                            text={chooseFilesLabel}
+                            size="small"
+                            disabled={disabled}
+                            onClick={() => fileInputRef.current?.click()}
+                        />
+                        {allowDirectories && (
+                            <Button
+                                text={chooseFolderLabel}
+                                size="small"
+                                disabled={disabled}
+                                onClick={() => folderInputRef.current?.click()}
+                            />
+                        )}
+                        {files.length > 0 && (
+                            <Button
+                                text={clearLabel}
+                                size="small"
+                                disabled={disabled}
+                                onClick={() => onFilesChange([])}
+                            />
+                        )}
+                    </div>
+                    {fileDropError !== null && (
+                        <p className="dropzone__error-message">{fileDropError}</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const Dropzone = (props: DropzoneProps) => {
+    if ("onFilesChange" in props && typeof props.onFilesChange === "function") {
+        return <SelectionDropzone {...props} />;
+    }
+    return <UploadDropzone {...props} />;
 };
 
 export default Dropzone;
