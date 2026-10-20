@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Dropzone, { DEFAULT_MAX_FILE_SIZE } from "./Dropzone";
@@ -201,6 +202,131 @@ describe("Dropzone", () => {
         );
 
         expect(document.querySelector(".icon--file")).toBeInTheDocument();
+    });
+});
+
+function SelectionHarness({
+    disabled = false,
+    onFilesChange,
+}: {
+    disabled?: boolean;
+    onFilesChange?: (files: File[]) => void;
+}) {
+    const [files, setFiles] = useState<File[]>([]);
+    return (
+        <Dropzone
+            label="Files or folder"
+            helperText="Drop files or a folder here, or choose them below."
+            accept="any"
+            isMulti
+            allowDirectories
+            disabled={disabled}
+            files={files}
+            chooseFilesLabel="Choose files"
+            chooseFolderLabel="Choose folder"
+            onFilesChange={(next) => {
+                setFiles(next);
+                onFilesChange?.(next);
+            }}
+        />
+    );
+}
+
+describe("Dropzone file selection", () => {
+    it("renders file and folder actions without uploading", () => {
+        render(<SelectionHarness />);
+
+        expect(screen.getByText("Files or folder")).toBeInTheDocument();
+        expect(screen.getByText(/Drop files or a folder here/i)).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Choose files" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Choose folder" })).toBeInTheDocument();
+
+        const inputs = document.querySelectorAll('input[type="file"]');
+        expect(inputs).toHaveLength(2);
+        expect(inputs[0]).toHaveProperty("multiple", true);
+        expect(inputs[1].getAttribute("webkitdirectory")).not.toBeNull();
+        expect(inputs[0]).not.toHaveAttribute("accept");
+    });
+
+    it("returns every selected file and can clear them", async () => {
+        const user = userEvent.setup();
+        const onFilesChange = vi.fn();
+        render(<SelectionHarness onFilesChange={onFilesChange} />);
+
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        const first = createFile("a.txt", 10, "text/plain");
+        const second = createFile("b.txt", 10, "text/plain");
+        fireEvent.change(input, { target: { files: [first, second] } });
+
+        await waitFor(() => {
+            expect(onFilesChange).toHaveBeenCalledWith([first, second]);
+        });
+
+        await user.click(screen.getByRole("button", { name: "Clear" }));
+        expect(onFilesChange).toHaveBeenLastCalledWith([]);
+    });
+
+    it("keeps a dropped folder's relative paths", async () => {
+        const onFilesChange = vi.fn();
+        render(<SelectionHarness onFilesChange={onFilesChange} />);
+
+        let read = false;
+        const transfer = {
+            types: ["Files"],
+            files: [],
+            items: [
+                {
+                    webkitGetAsEntry: () => ({
+                        isFile: false,
+                        isDirectory: true,
+                        name: "Photos",
+                        createReader: () => ({
+                            readEntries: (success: (entries: unknown[]) => void) => {
+                                if (read) {
+                                    success([]);
+                                    return;
+                                }
+                                read = true;
+                                success([
+                                    {
+                                        isFile: true,
+                                        isDirectory: false,
+                                        name: "cat.txt",
+                                        file: (done: (file: File) => void) => {
+                                            done(createFile("cat.txt", 4, "text/plain"));
+                                        },
+                                    },
+                                ]);
+                            },
+                        }),
+                    }),
+                },
+            ],
+        };
+
+        fireEvent.drop(document.querySelector(".dropzone") as HTMLElement, {
+            dataTransfer: transfer,
+        });
+
+        await waitFor(() => {
+            expect(onFilesChange).toHaveBeenCalled();
+        });
+        const [file] = onFilesChange.mock.calls[0][0] as File[];
+        expect(file.name).toBe("cat.txt");
+        expect(file.webkitRelativePath).toBe("Photos/cat.txt");
+    });
+
+    it("does not accept files while disabled", () => {
+        const onFilesChange = vi.fn();
+        render(<SelectionHarness disabled onFilesChange={onFilesChange} />);
+
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        fireEvent.change(input, {
+            target: { files: [createFile("a.txt", 10, "text/plain")] },
+        });
+
+        expect(onFilesChange).not.toHaveBeenCalled();
+        expect(screen.getByRole("button", { name: "Choose files" })).toBeDisabled();
     });
 });
 

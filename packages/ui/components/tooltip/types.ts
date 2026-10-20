@@ -14,4 +14,6 @@ export type TooltipProps = {
     theme?: TooltipTheme;
     arrow?: boolean;
     showTip?: boolean;
+    /** Place the tip on its requested side even when that hangs past the window. */
+    extendHost?: boolean;
 };
